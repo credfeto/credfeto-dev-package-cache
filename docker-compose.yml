@@ -8,9 +8,9 @@ services:
     hostname: nuget-postgresql
     image: postgres:16
     restart: unless-stopped
-    user: postgres
     stop_grace_period: 500s
     stop_signal: SIGINT
+    user: postgres
     environment:
       POSTGRES_USER: nuget
       POSTGRES_PASSWORD: nuget
@@ -18,7 +18,7 @@ services:
     volumes:
       - /cache/baget/db/postgresql:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "$POSTGRES_USER"]
+      test: ["CMD-SHELL", "pg_isready"]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -134,7 +134,7 @@ services:
     stop_signal: SIGINT
     environment:
       - VERDACCIO_PORT=8080
-      - VERDACCIO_PUBLIC_URL=https://npm.local:5555
+      - VERDACCIO_PUBLIC_URL=http://npm.local:5554
     volumes:
       - ./npm/conf:/verdaccio/conf
       - ./npm/plugins:/verdaccio/plugins
@@ -156,6 +156,7 @@ services:
       - ./certs:/etc/nginx/ssl
     ports:
       - 5555:443
+      - 5554:80
     healthcheck:
       test: curl --fail http://localhost/health || exit 1
       interval: 5s
