@@ -25,7 +25,7 @@ services:
       start_period: 80s
 
   nuget:
-    image: bagetter/bagetter:latest
+    image: bagetter/bagetter:1.5
     container_name: nuget
     restart: unless-stopped
     stop_grace_period: 500s
@@ -59,7 +59,7 @@ services:
         condition: service_healthy
 
   funfair-release:
-    image: bagetter/bagetter:latest
+    image: bagetter/bagetter:1.5
     container_name: funfair-release
     restart: unless-stopped
     stop_grace_period: 500s
@@ -93,7 +93,7 @@ services:
         condition: service_healthy
 
   funfair-prerelease:
-    image: bagetter/bagetter:latest
+    image: bagetter/bagetter:1.5
     container_name: funfair-prerelease
     restart: unless-stopped
     stop_grace_period: 500s
