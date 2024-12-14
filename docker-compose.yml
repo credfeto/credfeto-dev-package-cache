@@ -16,7 +16,7 @@ services:
       POSTGRES_PASSWORD: nuget
       PGUSER: nuget
     volumes:
-      - /cache/baget/db/postgresql:/var/lib/postgresql/data
+      - /cache/nuget/db/postgresql:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
       interval: 30s
@@ -46,9 +46,9 @@ services:
       - Storage__Path=/data/packages
       - Storage__Type=FileSystem
     volumes:
-      - /cache/baget/security/nuget:/root/.aspnet
-      - /cache/baget/packages/nuget:/data/packages
-      - /cache/baget/db/nuget:/data/db
+      - /cache/nuget/security/nuget:/root/.aspnet
+      - /cache/nuget/packages/nuget:/data
+      - /cache/nuget/db/nuget:/data/db
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
       interval: 5s
@@ -80,9 +80,9 @@ services:
       - Storage__Path=/data/packages
       - Storage__Type=FileSystem
     volumes:
-      - /cache/baget/security/nuget:/root/.aspnet
-      - /cache/baget/packages/funfair-release:/data/packages
-      - /cache/baget/db/funfair-release:/data/db
+      - /cache/nuget/security/nuget:/root/.aspnet
+      - /cache/nuget/packages/funfair-release:/data
+      - /cache/nuget/db/funfair-release:/data/db
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
       interval: 5s
@@ -114,9 +114,9 @@ services:
       - Storage__Path=/data/packages
       - Storage__Type=FileSystem
     volumes:
-      - /cache/baget/security/nuget:/root/.aspnet
-      - /cache/baget/packages/funfair-prerelease:/data/packages
-      - /cache/baget/db/funfair-prerelease:/data/db
+      - /cache/nuget/security/nuget:/root/.aspnet
+      - /cache/nuget/packages/funfair-prerelease:/data
+      - /cache/nuget/db/funfair-prerelease:/data/db
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
       interval: 5s
