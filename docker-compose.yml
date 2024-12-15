@@ -10,7 +10,6 @@ services:
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
-    user: postgres
     environment:
       POSTGRES_USER: nuget
       POSTGRES_PASSWORD: nuget
