@@ -1,0 +1,29 @@
+#! /bin/sh
+
+PROG=$0
+die() {
+    echo
+    echo "$@"
+    exit 1
+}
+
+BASEDIR="$(dirname "$(readlink -f "$0")")"
+echo "Script Dir: $BASEDIR"
+
+[ -f "$BASEDIR/.env" ] || die ".env is required"
+
+echo "Updating systemd scripts"
+sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.service" /etc/systemd/system/
+sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.timer" /etc/systemd/system/
+
+
+echo "systemd reload"
+sudo systemctl daemon-reload
+
+echo "Enable credfeto-package-cache.timer"
+sudo systemctl enable credfto-package-cache.timer
+
+echo "Start credfeto-batch-updates.timer"
+sudo systemctl start credfeto-package-cache.timer
+
+echo "Done"
