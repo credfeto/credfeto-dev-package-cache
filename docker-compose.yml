@@ -172,7 +172,7 @@ services:
         condition: service_healthy
 
   cache:
-    image: mcr.microsoft.com/dotnet/sdk:8.0
+    image: mcr.microsoft.com/dotnet/sdk:9.0
     container_name: cache
     depends_on:
       nginx:
