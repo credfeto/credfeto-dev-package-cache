@@ -1,5 +1,6 @@
 #! /bin/sh
 
+[ -d /cache/nginx ] || mkdir /cache/nginx
 [ -d /cache/npm ] || mkdir /cache/npm
 [ -d /cache/nuget ] || mkdir /cache/nuget
 
