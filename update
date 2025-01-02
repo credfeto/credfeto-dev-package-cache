@@ -1,8 +1,8 @@
 #! /bin/sh
 
-[ -d /cache/nginx ] || mkdir /cache/nginx
-[ -d /cache/npm ] || mkdir /cache/npm
-[ -d /cache/nuget ] || mkdir /cache/nuget
+[ -d /cache/nginx ] || sudo mkdir /cache/nginx
+[ -d /cache/npm ] || sudo mkdir /cache/npm
+[ -d /cache/nuget ] || sudo mkdir /cache/nuget
 
 git pull
 
