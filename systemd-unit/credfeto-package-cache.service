@@ -1,11 +1,12 @@
 [Unit]
 Description=Update Credfeto Package Cache
 After=network.target
+
 [Service]
+User=markr
 Type=oneshot
 IOSchedulingClass=idle
 CPUSchedulingPolicy=idle
-
 WorkingDirectory=/home/markr/work/credfeto-package-cache
 ExecStart=/home/markr/work/credfeto-package-cache/update
 
