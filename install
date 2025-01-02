@@ -21,7 +21,7 @@ echo "systemd reload"
 sudo systemctl daemon-reload
 
 echo "Enable credfeto-package-cache.timer"
-sudo systemctl enable credfto-package-cache.timer
+sudo systemctl enable credfeto-package-cache.timer
 
 echo "Start credfeto-package-cache.timer"
 sudo systemctl start credfeto-package-cache.timer
