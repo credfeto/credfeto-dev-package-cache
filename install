@@ -13,8 +13,8 @@ echo "Script Dir: $BASEDIR"
 # [ -f "$BASEDIR/.env" ] || die ".env is required"
 
 echo "Updating systemd scripts"
-sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.service" /etc/systemd/system/
-sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.timer" /etc/systemd/system/
+sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.service" /etc/systemd/system/credfeto-package-cache.service
+sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.timer" /etc/systemd/system/credfeto-package-cache.timer
 
 
 echo "systemd reload"
