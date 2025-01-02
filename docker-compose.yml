@@ -151,8 +151,9 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     volumes:
-      - ./proxy.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./certs:/etc/nginx/ssl
+      - /cache/nginx:/var/cache/nginx/proxy
     ports:
       - 5555:443
       - 5554:80
