@@ -29,10 +29,13 @@ update() {
     echo "Updating packages:"
     for PACKAGE in ${TOOLS}; do
         echo "* Updating $PACKAGE..."
-        dotnet tool update --local "$PACKAGE"
+        dotnet tool update --local "$PACKAGE" || dotnet tool install --local "$PACKAGE" --create-manifest-if-needed
     done
     echo "All packages updated"
+    dotnet tool list
 }
+
+dotnet tool list
 
 echo "Installing tools:"
 for PACKAGE in ${TOOLS}; do
@@ -41,6 +44,8 @@ for PACKAGE in ${TOOLS}; do
 done
 
 echo "All tools installed"
+
+dotnet tool list
 
 while sleep 120; do
     update
