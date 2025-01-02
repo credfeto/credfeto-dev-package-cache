@@ -1,4 +1,9 @@
 #! /bin/sh
 
+[ -d /cache/npm ] || mkdir /cache/npm
+[ -d /cache/nuget ] || mkdir /cache/nuget
+
+git pull
+
 sudo chown -R 10001:65533 /cache/npm
 sudo docker compose pull && sudo docker compose up -d
