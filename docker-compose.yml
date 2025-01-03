@@ -3,7 +3,7 @@
 
 services:
 
-  nuget-postgresql:
+  devpkg-nuget-postgresql:
     container_name: devpkg-nuget-postgresql
     hostname: nuget-postgresql
     image: postgres:16
@@ -22,10 +22,13 @@ services:
       timeout: 60s
       retries: 5
       start_period: 80s
+    networks:
+      backend:
 
-  nuget:
+  devpkg-nuget:
     image: bagetter/bagetter:latest
     container_name: devpkg-nuget
+    hostname: nuget
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
@@ -54,12 +57,15 @@ services:
       timeout: 4s
       retries: 5
     depends_on:
-      nuget-postgresql:
+      devpkg-nuget-postgresql:
         condition: service_healthy
+    networks:
+      backend:
 
-  funfair-release:
+  devpkg-funfair-release:
     image: bagetter/bagetter:latest
     container_name: devpkg-funfair-release
+    hostname: funfair-release
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
@@ -88,12 +94,15 @@ services:
       timeout: 4s
       retries: 5
     depends_on:
-      nuget-postgresql:
+      devpkg-nuget-postgresql:
         condition: service_healthy
+    networks:
+      backend:
 
-  funfair-prerelease:
+  devpkg-funfair-prerelease:
     image: bagetter/bagetter:latest
     container_name: devpkg-funfair-prerelease
+    hostname: funfair-prerelease
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
@@ -122,12 +131,15 @@ services:
       timeout: 4s
       retries: 5
     depends_on:
-      nuget-postgresql:
+      devpkg-nuget-postgresql:
         condition: service_healthy
+    networks:
+      backend:
 
-  npm:
+  devpkg-npm:
     image: verdaccio/verdaccio:latest
     container_name: devpkg-npm
+    hostname: npm
     restart: unless-stopped
     stop_grace_period: 5s
     stop_signal: SIGINT
@@ -143,8 +155,10 @@ services:
       interval: 5s
       timeout: 4s
       retries: 5
+    networks:
+      backend:
 
-  nginx:
+  devpkg-nginx:
     image: nginx:stable-alpine
     container_name: devpkg-nginx
     restart: unless-stopped
@@ -163,14 +177,21 @@ services:
       timeout: 4s
       retries: 5
     depends_on:
-      nuget:
+      devpkg-nuget:
         condition: service_healthy
-      funfair-prerelease:
+      devpkg-funfair-prerelease:
         condition: service_healthy
-      funfair-release:
+      devpkg-funfair-release:
         condition: service_healthy
-      npm:
+      devpkg-npm:
         condition: service_healthy
+    networks:
+      backend:
+      frontend:
+        aliases:
+          - api.nuget.local
+          - funfair.nuget.local
+          - funfair-prerelease.nuget.local
 
   cache:
     image: mcr.microsoft.com/dotnet/sdk:9.0
@@ -179,7 +200,7 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     depends_on:
-      nginx:
+      devpkg-nginx:
         condition: service_healthy
     volumes:
       - ./cache/populate:/root/populate
@@ -192,3 +213,12 @@ services:
       interval: 5s
       timeout: 4s
       retries: 5
+    networks:
+      frontend:
+
+networks:
+  backend:
+    driver: bridge
+
+  frontend:
+    driver: bridge
