@@ -24,6 +24,9 @@ dotnet --list-sdks
 echo "Waiting for start"
 sleep 30
 
+echo "Listing Nuget Sources"
+dotnet nuget source list
+
 echo "Clearing everything"
 dotnet nuget locals all --clear
 
