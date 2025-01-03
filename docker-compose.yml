@@ -180,6 +180,12 @@ services:
         condition: service_healthy
     volumes:
       - ./cache/populate:/root/populate
+      - ./cache/healthcheck:/root/healthcheck
       - ./cache/nuget.config:/root/.nuget/NuGet/NuGet.Config
     command:
       /root/populate
+    healthcheck:
+      test: /root/healthcheck
+      interval: 5s
+      timeout: 4s
+      retries: 5
