@@ -175,6 +175,9 @@ services:
   cache:
     image: mcr.microsoft.com/dotnet/sdk:9.0
     container_name: cache
+    restart: unless-stopped
+    stop_grace_period: 5s
+    stop_signal: SIGINT
     depends_on:
       nginx:
         condition: service_healthy
