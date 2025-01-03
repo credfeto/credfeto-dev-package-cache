@@ -4,7 +4,7 @@
 services:
 
   nuget-postgresql:
-    container_name: nuget-postgresql
+    container_name: devpkg-nuget-postgresql
     hostname: nuget-postgresql
     image: postgres:16
     restart: unless-stopped
@@ -25,7 +25,7 @@ services:
 
   nuget:
     image: bagetter/bagetter:latest
-    container_name: nuget
+    container_name: devpkg-nuget
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
@@ -59,7 +59,7 @@ services:
 
   funfair-release:
     image: bagetter/bagetter:latest
-    container_name: funfair-release
+    container_name: devpkg-funfair-release
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
@@ -93,7 +93,7 @@ services:
 
   funfair-prerelease:
     image: bagetter/bagetter:latest
-    container_name: funfair-prerelease
+    container_name: devpkg-funfair-prerelease
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
@@ -127,7 +127,7 @@ services:
 
   npm:
     image: verdaccio/verdaccio:latest
-    container_name: npm
+    container_name: devpkg-npm
     restart: unless-stopped
     stop_grace_period: 5s
     stop_signal: SIGINT
@@ -146,7 +146,7 @@ services:
 
   nginx:
     image: nginx:stable-alpine
-    container_name: nginx
+    container_name: devpkg-nginx
     restart: unless-stopped
     stop_grace_period: 5s
     stop_signal: SIGINT
@@ -174,7 +174,7 @@ services:
 
   cache:
     image: mcr.microsoft.com/dotnet/sdk:9.0
-    container_name: cache
+    container_name: devpkg-cache
     restart: unless-stopped
     stop_grace_period: 5s
     stop_signal: SIGINT
