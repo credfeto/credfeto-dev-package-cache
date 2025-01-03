@@ -13,7 +13,8 @@ TOOLS="sleet \
        Credfeto.Changelog.Cmd \
        Credfeto.Package.Push \
        FunFair.Content.Packager.Cmd \
-       FunFair.Content.PackageSigner.Cmd"
+       FunFair.Content.PackageSigner.Cmd \
+       JetBrains.ReSharper.GlobalTools"
 
 echo "HOME: $HOME"
 
