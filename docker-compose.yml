@@ -192,6 +192,7 @@ services:
           - api.nuget.local
           - funfair.nuget.local
           - funfair-prerelease.nuget.local
+          - npm.local
 
   cache:
     image: mcr.microsoft.com/dotnet/sdk:9.0
@@ -203,6 +204,10 @@ services:
       devpkg-nginx:
         condition: service_healthy
     volumes:
+      - ./certs/api.nuget.local.pem:/usr/local/share/ca-certificates/api.nuget.local.crt:r
+      - ./certs/funfair.nuget.local.pem:/usr/local/share/ca-certificates/funfair.nuget.local.crt:r
+      - ./certs/funfair-prerelease.nuget.local.pem:/usr/local/share/ca-certificates/funfair-prerelease.nuget.local.crt:r
+      - ./certs/npm.local.crt:/usr/local/share/ca-certificates/npm.local.crt:r
       - ./cache/populate:/root/populate
       - ./cache/healthcheck:/root/healthcheck
       - ./cache/nuget.config:/root/.nuget/NuGet/NuGet.Config

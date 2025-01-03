@@ -1,5 +1,10 @@
 #! /bin/sh
 
+# Ensure CA Certs are installed
+apt update && apt upgrade -y && apt install ca-certificates -y
+update-ca-certificates
+
+
 export PATH="$PATH:/root/.dotnet/tools"
 TOOLS="sleet \
        TSQLLint \
