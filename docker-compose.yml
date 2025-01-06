@@ -6,23 +6,22 @@ services:
   devpkg-nuget-postgresql:
     container_name: devpkg-nuget-postgresql
     hostname: nuget-postgresql
-    image: postgres:16
+    image: postgres:16-alpine3.21
     restart: unless-stopped
     stop_grace_period: 500s
     stop_signal: SIGINT
     environment:
       POSTGRES_USER: nuget
       POSTGRES_PASSWORD: nuget
-      POSTGRES_DB: cache
-      PGUSER: nuget
-      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_DB: postgres
     volumes:
-      - /cache/nuget/db/postgresql:/var/lib/postgresql/data
+      - /cache/nuget/db:/var/lib/postgresql/data
     healthcheck:
-      test: pg_isready -h localhost -U $$POSTGRES_USER
+      test: pg_isready
       interval: 30s
       timeout: 60s
       retries: 5
+      start_period: 120s
     networks:
       backend:
 
@@ -30,7 +29,7 @@ services:
     image: bagetter/bagetter:latest
     container_name: devpkg-nuget
     hostname: nuget
-    restart: unless-stopped
+    restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
     environment:
@@ -51,12 +50,12 @@ services:
     volumes:
       - /cache/nuget/security/nuget:/root/.aspnet
       - /cache/nuget/packages/nuget:/data
-      - /cache/nuget/db/nuget:/data/db
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
       interval: 5s
-      timeout: 4s
+      timeout: 30s
       retries: 5
+      start_period: 120s
     depends_on:
       devpkg-nuget-postgresql:
         condition: service_healthy
@@ -67,7 +66,7 @@ services:
     image: bagetter/bagetter:latest
     container_name: devpkg-funfair-release
     hostname: funfair-release
-    restart: unless-stopped
+    restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
     environment:
@@ -88,14 +87,16 @@ services:
     volumes:
       - /cache/nuget/security/nuget:/root/.aspnet
       - /cache/nuget/packages/funfair-release:/data
-      - /cache/nuget/db/funfair-release:/data/db
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
       interval: 5s
-      timeout: 4s
+      timeout: 30s
       retries: 5
+      start_period: 120s
     depends_on:
       devpkg-nuget-postgresql:
+        condition: service_healthy
+      devpkg-nuget:
         condition: service_healthy
     networks:
       backend:
@@ -104,7 +105,7 @@ services:
     image: bagetter/bagetter:latest
     container_name: devpkg-funfair-prerelease
     hostname: funfair-prerelease
-    restart: unless-stopped
+    restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
     environment:
@@ -125,14 +126,18 @@ services:
     volumes:
       - /cache/nuget/security/nuget:/root/.aspnet
       - /cache/nuget/packages/funfair-prerelease:/data
-      - /cache/nuget/db/funfair-prerelease:/data/db
     healthcheck:
       test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
       interval: 5s
-      timeout: 4s
+      timeout: 30s
       retries: 5
+      start_period: 120s
     depends_on:
       devpkg-nuget-postgresql:
+        condition: service_healthy
+      devpkg-nuget:
+        condition: service_healthy
+      devpkg-funfair-release:
         condition: service_healthy
     networks:
       backend:
@@ -141,7 +146,7 @@ services:
     image: verdaccio/verdaccio:latest
     container_name: devpkg-npm
     hostname: npm
-    restart: unless-stopped
+    restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
     environment:
@@ -156,6 +161,7 @@ services:
       interval: 5s
       timeout: 4s
       retries: 5
+      start_period: 120s
     networks:
       backend:
 
@@ -176,7 +182,8 @@ services:
       test: curl --fail http://localhost/health || exit 1
       interval: 5s
       timeout: 4s
-      retries: 5
+      retries: 6
+      start_period: 120s
     depends_on:
       devpkg-nuget:
         condition: service_healthy
@@ -219,6 +226,7 @@ services:
       interval: 5s
       timeout: 4s
       retries: 5
+      start_period: 120s
     networks:
       frontend:
 
