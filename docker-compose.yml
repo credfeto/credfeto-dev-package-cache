@@ -169,8 +169,8 @@ services:
       - ./certs:/etc/nginx/ssl
       - /cache/nginx:/var/cache/nginx/proxy
     ports:
-      - 5555:443
-      - 5554:80
+      - 5555:5555/tcp
+      - 5554:5554/tcp
     healthcheck:
       test: curl --fail http://localhost/health || exit 1
       interval: 5s
