@@ -8,13 +8,34 @@ die() {
 }
 
 BASEDIR="$(dirname "$(readlink -f "$0")")"
-echo "Script Dir: $BASEDIR"
+
+PACKAGE_ID=
+PACKAGE_VERSION=
+while [ $# -gt 0 ]; do
+  key="$1"
+
+  case $key in
+    -P|--package-id)
+      PACKAGE_ID="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    -V|--version)
+      PACKAGE_VERSION="$2"
+      shift # past argument
+      shift # past value
+      ;;
+    *)    # unknown option - skip here
+      shift # past argument
+      ;;
+  esac
+done
+
+[ -z "$PACKAGE_ID" ] && die "Package Id not specified"
+[ -z "$PACKAGE_VERSION" ] && die "Package Version not specified"
 
 WORKFOLDER=/tmp/pkg
 BASE=/cache/nuget/packages/nuget/packages/packages
-PACKAGE_ID=Microsoft.NETCore.Platforms
-PACKAGE_VERSION=1.0.1
-
 LOWER_PACKAGEID=${PACKAGE_ID,,}
 
 PACKAGE_FOLDER=$BASE/$LOWER_PACKAGEID/$PACKAGE_VERSION
@@ -28,7 +49,7 @@ WORK_PACKAGE=$WORKFOLDER/$LOWER_PACKAGEID.zip
 WORK_NUSPEC=$WORKFOLDER/$LOWER_PACKAGEID.nuspec
 DOWNLOAD_URL=https://www.nuget.org/api/v2/package/$LOWER_PACKAGEID/$PACKAGE_VERSION
 
-if [ ! -f "$NUPKG_PACKAGE_FILENAME" ] || [ ! -f "$NUSPEC_PACKAGE_FILENAME" ]  ; then
+if [ ! -f "$NUPKG_PACKAGE_FILENAME" ] || [ ! -f "$NUSPEC_PACKAGE_FILENAME" ]; then
     [ -d "$WORKFOLDER" ] && rm -fr "$WORKFOLDER"
     mkdir -p "$WORKFOLDER"
 
@@ -38,7 +59,7 @@ if [ ! -f "$NUPKG_PACKAGE_FILENAME" ] || [ ! -f "$NUSPEC_PACKAGE_FILENAME" ]  ; 
     unzip "$WORK_PACKAGE" *.nuspec -d "$WORKFOLDER/download"
     mv $WORKFOLDER/download/*.nuspec "$WORK_NUSPEC"
 
-    sudo mv "$WORK_PACKAGE" "$NUSPEC_PACKAGE_FILENAME"
+    sudo mv "$WORK_PACKAGE" "$NUPKG_PACKAGE_FILENAME"
     sudo mv "$WORK_NUSPEC" "$NUSPEC_PACKAGE_FILENAME"
 
 fi

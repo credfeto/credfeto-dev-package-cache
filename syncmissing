@@ -1,0 +1,39 @@
+#! /bin/bash
+
+PROG=$0
+die() {
+    echo
+    echo "$@"
+    exit 1
+}
+
+BASEDIR="$(dirname "$(readlink -f "$0")")"
+SYNC=$BASEDIR/nuget-download
+
+[ -f "$SYNC" ] || die "$SYNC does not exist"
+
+BASEFOLDER=/cache/nuget/packages/nuget/packages/packages
+
+for PACKAGE_FOLDER in $BASEFOLDER/*; do
+  if [ -d "$PACKAGE_FOLDER" ]; then
+    PACKAGE=$(basename "$PACKAGE_FOLDER")
+    echo "$PACKAGE:"
+    for VERSION_FOLDER in $PACKAGE_FOLDER/*; do
+      if [ -d "$VERSION_FOLDER" ]; then
+        VERSION=$(basename "$VERSION_FOLDER")
+        echo " * $VERSION:"
+        REBUILD=false
+        [ -f "$VERSION_FOLDER/$PACKAGE.$VERSION.nupkg" ] && echo "   - nupkg exists" || REBUILD=true
+        [ -f "$VERSION_FOLDER/$PACKAGE.nuspec" ] && echo "   - nuspec exists" || REBUILD=true
+        if [ "$REBUILD" == "true" ]; then
+          echo "   + Needs manual sync for ($PACKAGE.$VERSION.nupkg)"
+          $SYNC --package-id "$PACKAGE" --version "$VERSION"
+        fi
+      fi
+    done
+  fi
+done
+
+#find /cache/nuget/packages/nuget/packages/packages/ -maxdepth 1 -type d -print0 |   while IFS= read -rd '' dir; do echo "$dir"; done
+
+
