@@ -1,0 +1,46 @@
+#! /bin/bash
+
+PROG=$0
+die() {
+    echo
+    echo "$@"
+    exit 1
+}
+
+BASEDIR="$(dirname "$(readlink -f "$0")")"
+echo "Script Dir: $BASEDIR"
+
+WORKFOLDER=/tmp/pkg
+BASE=/cache/nuget/packages/nuget/packages/packages
+PACKAGE_ID=Microsoft.NETCore.Platforms
+PACKAGE_VERSION=1.0.1
+
+LOWER_PACKAGEID=${PACKAGE_ID,,}
+
+PACKAGE_FOLDER=$BASE/$LOWER_PACKAGEID/$PACKAGE_VERSION
+echo "Folder: $PACKAGE_FOLDER"
+[ -d "$PACKAGE_FOLDER" ] || sudo mkdir -p "$PACKAGE_FOLDER"
+
+NUPKG_PACKAGE_FILENAME=$BASE/$LOWER_PACKAGEID/$PACKAGE_VERSION/$LOWER_PACKAGEID.$PACKAGE_VERSION.nupkg
+NUSPEC_PACKAGE_FILENAME=$BASE/$LOWER_PACKAGEID/$PACKAGE_VERSION/$LOWER_PACKAGEID.nuspec
+
+WORK_PACKAGE=$WORKFOLDER/$LOWER_PACKAGEID.zip
+WORK_NUSPEC=$WORKFOLDER/$LOWER_PACKAGEID.nuspec
+DOWNLOAD_URL=https://www.nuget.org/api/v2/package/$LOWER_PACKAGEID/$PACKAGE_VERSION
+
+if [ ! -f "$NUPKG_PACKAGE_FILENAME" ] || [ ! -f "$NUSPEC_PACKAGE_FILENAME" ]  ; then
+    [ -d "$WORKFOLDER" ] && rm -fr "$WORKFOLDER"
+    mkdir -p "$WORKFOLDER"
+
+    wget --no-verbose --tries=1 "$DOWNLOAD_URL" -O "$WORK_PACKAGE" || die "wget: Could not download"
+    [ -f "$WORK_PACKAGE" ] || die "Downloaded file does not exist"
+    unzip -v "$WORK_PACKAGE" *.nuspec
+    unzip "$WORK_PACKAGE" *.nuspec -d "$WORKFOLDER/download"
+    mv $WORKFOLDER/download/*.nuspec "$WORK_NUSPEC"
+
+    sudo mv "$WORK_PACKAGE" "$NUSPEC_PACKAGE_FILENAME"
+    sudo mv "$WORK_NUSPEC" "$NUSPEC_PACKAGE_FILENAME"
+
+fi
+
+
