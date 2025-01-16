@@ -47,7 +47,7 @@ services:
       - Mirror__PackageSource=https://api.nuget.org/v3/index.json
       - PackageDeletionBehavior=HardDelete
       - Search__Type=Database
-      - Storage__Path=/data/packages
+      - Storage__Path=/data
       - Storage__Type=FileSystem
     volumes:
       - /cache/nuget/security/nuget:/root/.aspnet
@@ -84,7 +84,7 @@ services:
       - Mirror__PackageSource=https://dotnet-nuget.s3.eu-west-1.amazonaws.com/index.json
       - PackageDeletionBehavior=HardDelete
       - Search__Type=Database
-      - Storage__Path=/data/packages
+      - Storage__Path=/data
       - Storage__Type=FileSystem
     volumes:
       - /cache/nuget/security/nuget:/root/.aspnet
@@ -123,7 +123,7 @@ services:
       - Mirror__PackageSource=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com/index.json
       - PackageDeletionBehavior=HardDelete
       - Search__Type=Database
-      - Storage__Path=/data/packages
+      - Storage__Path=/data
       - Storage__Type=FileSystem
     volumes:
       - /cache/nuget/security/nuget:/root/.aspnet

@@ -12,7 +12,7 @@ SYNC=$BASEDIR/nuget-download
 
 [ -f "$SYNC" ] || die "$SYNC does not exist"
 
-BASEFOLDER=/cache/nuget/packages/nuget/packages/packages
+BASEFOLDER=/cache/nuget/packages/nuget/packages
 
 for PACKAGE_FOLDER in $BASEFOLDER/*; do
   if [ -d "$PACKAGE_FOLDER" ]; then
