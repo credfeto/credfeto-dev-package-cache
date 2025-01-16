@@ -59,9 +59,12 @@ if [ ! -f "$NUPKG_PACKAGE_FILENAME" ] || [ ! -f "$NUSPEC_PACKAGE_FILENAME" ]; th
     unzip "$WORK_PACKAGE" *.nuspec -d "$WORKFOLDER/download"
     mv $WORKFOLDER/download/*.nuspec "$WORK_NUSPEC"
 
-    sudo mv "$WORK_PACKAGE" "$NUPKG_PACKAGE_FILENAME"
-    sudo mv "$WORK_NUSPEC" "$NUSPEC_PACKAGE_FILENAME"
+    sudo mv "$WORK_PACKAGE" "$NUPKG_PACKAGE_FILENAME" || die "Could not update $NUPKG_PACKAGE_FILENAME"
+    sudo mv "$WORK_NUSPEC" "$NUSPEC_PACKAGE_FILENAME" || die "Could not update $NUSPEC_PACKAGE_FILENAME"
 
 fi
 
+
+[ -f "$NUPKG_PACKAGE_FILENAME" ] || die "$NUPKG_PACKAGE_FILENAME still does not exist after updating"
+[ -f "$NUSPEC_PACKAGE_FILENAME" ] || die "$NUSPEC_PACKAGE_FILENAME still does not exist after updating"
 
