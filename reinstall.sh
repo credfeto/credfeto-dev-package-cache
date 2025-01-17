@@ -22,8 +22,6 @@ sudo docker compose stop && sudo docker compose rm --force
 echo "Removing NGINX cache"
 sudo rm -fr /cache/nginx
 
-[ -d "/cache/nuget/db" ] && die "DB Cache already exists"
-
 [ -d /cache/nginx ] || sudo mkdir /cache/nginx
 [ -d /cache/npm ] || sudo mkdir /cache/npm
 [ -d /cache/nuget ] || sudo mkdir /cache/nuget
