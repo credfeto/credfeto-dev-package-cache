@@ -3,146 +3,196 @@
 
 services:
 
-  devpkg-nuget-postgresql:
-    container_name: devpkg-nuget-postgresql
-    hostname: nuget-postgresql
-    image: postgres:16-alpine3.21
-    restart: unless-stopped
-    stop_grace_period: 500s
-    stop_signal: SIGINT
-    environment:
-      POSTGRES_USER: nuget
-      POSTGRES_PASSWORD: nuget
-      POSTGRES_DB: postgres
-    volumes:
-      - /cache/nuget/db:/var/lib/postgresql/data
-      - ./db/01-max-connections.sh:/docker-entrypoint-initdb.d/01-max-connections.sh
-      - ./db/02-users.sql:/docker-entrypoint-initdb.d/02-users.sql:r
-    healthcheck:
-      test: pg_isready -U nuget
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 120s
-    networks:
-      backend:
+  #  devpkg-nuget-postgresql:
+  #    container_name: devpkg-nuget-postgresql
+  #    hostname: nuget-postgresql
+  #    image: postgres:16-alpine3.21
+  #    restart: unless-stopped
+  #    stop_grace_period: 500s
+  #    stop_signal: SIGINT
+  #    environment:
+  #      POSTGRES_USER: nuget
+  #      POSTGRES_PASSWORD: nuget
+  #      POSTGRES_DB: postgres
+  #    volumes:
+  #      - /cache/nuget/db:/var/lib/postgresql/data
+  #      - ./db/01-max-connections.sh:/docker-entrypoint-initdb.d/01-max-connections.sh
+  #      - ./db/02-users.sql:/docker-entrypoint-initdb.d/02-users.sql:r
+  #    healthcheck:
+  #      test: pg_isready -U nuget
+  #      interval: 30s
+  #      timeout: 60s
+  #      retries: 5
+  #      start_period: 120s
+  #    networks:
+  #      backend:
 
   devpkg-nuget:
-    image: bagetter/bagetter:latest
+    image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
     container_name: devpkg-nuget
     hostname: nuget
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
     environment:
-      - AllowPackageOverwrites=true
-      - ApiKey=Upload
-      - Database__ConnectionString=Server=nuget-postgresql;Port=5432;Database=nuget;User Id=nuget;Password=nuget;
-      - Database__Type=PostgreSql
-      - Logging__Console__LogLevel__Default=Warning
-      - MaxPackageSizeGiB=10
-      - MaxVersionsPerPackage=5
-      - Mirror__Enabled=true
-      - Mirror__PackageDownloadTimeoutSeconds=60000
-      - Mirror__PackageSource=https://api.nuget.org/v3/index.json
-      - PackageDeletionBehavior=HardDelete
-      - Search__Type=Database
-      - Storage__Path=/data
-      - Storage__Type=FileSystem
+      - Proxy__UpstreamUrl__0=https://api.nuget.org
+      - Proxy__PublicUrl=https://api.nuget.local:5555
+      - Proxy__Packages=/data
     volumes:
-      - /cache/nuget/security/nuget:/root/.aspnet
-      - /cache/nuget/packages/nuget:/data
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
-      interval: 5s
-      timeout: 30s
-      retries: 5
-      start_period: 120s
-    depends_on:
-      devpkg-nuget-postgresql:
-        condition: service_healthy
+      - /cache/nuget/api.nuget.local:/data
     networks:
       backend:
 
   devpkg-funfair-release:
-    image: bagetter/bagetter:latest
+    image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
     container_name: devpkg-funfair-release
     hostname: funfair-release
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
     environment:
-      - AllowPackageOverwrites=true
-      - ApiKey=Upload
-      - Database__ConnectionString=Server=nuget-postgresql;Port=5432;Database=funfair-release;User Id=nuget;Password=nuget;
-      - Database__Type=PostgreSql
-      - Logging__Console__LogLevel_Default=Warning
-      - MaxPackageSizeGiB=10
-      - MaxVersionsPerPackage=5
-      - Mirror__Enabled=true
-      - Mirror__PackageDownloadTimeoutSeconds=60000
-      - Mirror__PackageSource=https://dotnet-nuget.s3.eu-west-1.amazonaws.com/index.json
-      - PackageDeletionBehavior=HardDelete
-      - Search__Type=Database
-      - Storage__Path=/data
-      - Storage__Type=FileSystem
+      - Proxy__UpstreamUrl__0=https://dotnet-nuget.s3.eu-west-1.amazonaws.com
+      - Proxy__UpstreamUrl__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget
+      - Proxy__PublicUrl=https://funfair.nuget.local:5555
+      - Proxy__Packages=/data
     volumes:
-      - /cache/nuget/security/nuget:/root/.aspnet
-      - /cache/nuget/packages/funfair-release:/data
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
-      interval: 5s
-      timeout: 30s
-      retries: 5
-      start_period: 120s
-    depends_on:
-      devpkg-nuget-postgresql:
-        condition: service_healthy
-      devpkg-nuget:
-        condition: service_healthy
+      - /cache/nuget/funfair.nuget.local:/data
     networks:
       backend:
 
   devpkg-funfair-prerelease:
-    image: bagetter/bagetter:latest
+    image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
     container_name: devpkg-funfair-prerelease
     hostname: funfair-prerelease
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
     environment:
-      - AllowPackageOverwrites=true
-      - ApiKey=Upload
-      - Database__ConnectionString=Server=nuget-postgresql;Port=5432;Database=funfair-prerelease;User Id=nuget;Password=nuget;
-      - Database__Type=PostgreSql
-      - Logging__Console__LogLevel_Default=Warning
-      - MaxPackageSizeGiB=10
-      - MaxVersionsPerPackage=5
-      - Mirror__Enabled=true
-      - Mirror__PackageDownloadTimeoutSeconds=60000
-      - Mirror__PackageSource=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com/index.json
-      - PackageDeletionBehavior=HardDelete
-      - Search__Type=Database
-      - Storage__Path=/data
-      - Storage__Type=FileSystem
+      - Proxy__UpstreamUrl__0=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com
+      - Proxy__UpstreamUrl__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget-prerelease
+      - Proxy__PublicUrl=https://funfair.nuget.local:5555
+      - Proxy__Packages=/data
     volumes:
-      - /cache/nuget/security/nuget:/root/.aspnet
-      - /cache/nuget/packages/funfair-prerelease:/data
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
-      interval: 5s
-      timeout: 30s
-      retries: 5
-      start_period: 120s
-    depends_on:
-      devpkg-nuget-postgresql:
-        condition: service_healthy
-      devpkg-nuget:
-        condition: service_healthy
-      devpkg-funfair-release:
-        condition: service_healthy
+      - /cache/nuget/funfair.nuget.local:/data
     networks:
       backend:
+
+#  devpkg-nuget:
+#    image: bagetter/bagetter:latest
+#    container_name: devpkg-nuget
+#    hostname: nuget
+#    restart: always
+#    stop_grace_period: 500s
+#    stop_signal: SIGINT
+#    environment:
+#      - AllowPackageOverwrites=true
+#      - ApiKey=Upload
+#      - Database__ConnectionString=Server=nuget-postgresql;Port=5432;Database=nuget;User Id=nuget;Password=nuget;
+#      - Database__Type=PostgreSql
+#      - Logging__Console__LogLevel__Default=Warning
+#      - MaxPackageSizeGiB=10
+#      - MaxVersionsPerPackage=5
+#      - Mirror__Enabled=true
+#      - Mirror__PackageDownloadTimeoutSeconds=60000
+#      - Mirror__PackageSource=https://api.nuget.org/v3/index.json
+#      - PackageDeletionBehavior=HardDelete
+#      - Search__Type=Database
+#      - Storage__Path=/data
+#      - Storage__Type=FileSystem
+#    volumes:
+#      - /cache/nuget/security/nuget:/root/.aspnet
+#      - /cache/nuget/packages/nuget:/data
+#    healthcheck:
+#      test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+#      interval: 5s
+#      timeout: 30s
+#      retries: 5
+#      start_period: 120s
+#    depends_on:
+#      devpkg-nuget-postgresql:
+#        condition: service_healthy
+#    networks:
+#      backend:
+
+#  devpkg-funfair-release:
+#    image: bagetter/bagetter:latest
+#    container_name: devpkg-funfair-release
+#    hostname: funfair-release
+#    restart: always
+#    stop_grace_period: 500s
+#    stop_signal: SIGINT
+#    environment:
+#      - AllowPackageOverwrites=true
+#      - ApiKey=Upload
+#      - Database__ConnectionString=Server=nuget-postgresql;Port=5432;Database=funfair-release;User Id=nuget;Password=nuget;
+#      - Database__Type=PostgreSql
+#      - Logging__Console__LogLevel_Default=Warning
+#      - MaxPackageSizeGiB=10
+#      - MaxVersionsPerPackage=5
+#      - Mirror__Enabled=true
+#      - Mirror__PackageDownloadTimeoutSeconds=60000
+#      - Mirror__PackageSource=https://dotnet-nuget.s3.eu-west-1.amazonaws.com/index.json
+#      - PackageDeletionBehavior=HardDelete
+#      - Search__Type=Database
+#      - Storage__Path=/data
+#      - Storage__Type=FileSystem
+#    volumes:
+#      - /cache/nuget/security/nuget:/root/.aspnet
+#      - /cache/nuget/packages/funfair-release:/data
+#    healthcheck:
+#      test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+#      interval: 5s
+#      timeout: 30s
+#      retries: 5
+#      start_period: 120s
+#    depends_on:
+#      devpkg-nuget-postgresql:
+#        condition: service_healthy
+#      devpkg-nuget:
+#        condition: service_healthy
+#    networks:
+#      backend:
+
+#  devpkg-funfair-prerelease:
+#    image: bagetter/bagetter:latest
+#    container_name: devpkg-funfair-prerelease
+#    hostname: funfair-prerelease
+#    restart: always
+#    stop_grace_period: 500s
+#    stop_signal: SIGINT
+#    environment:
+#      - AllowPackageOverwrites=true
+#      - ApiKey=Upload
+#      - Database__ConnectionString=Server=nuget-postgresql;Port=5432;Database=funfair-prerelease;User Id=nuget;Password=nuget;
+#      - Database__Type=PostgreSql
+#      - Logging__Console__LogLevel_Default=Warning
+#      - MaxPackageSizeGiB=10
+#      - MaxVersionsPerPackage=5
+#      - Mirror__Enabled=true
+#      - Mirror__PackageDownloadTimeoutSeconds=60000
+#      - Mirror__PackageSource=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com/index.json
+#      - PackageDeletionBehavior=HardDelete
+#      - Search__Type=Database
+#      - Storage__Path=/data
+#      - Storage__Type=FileSystem
+#    volumes:
+#      - /cache/nuget/security/nuget:/root/.aspnet
+#      - /cache/nuget/packages/funfair-prerelease:/data
+#    healthcheck:
+#      test: wget --no-verbose --tries=1 --spider http://localhost:8080/health || exit 1
+#      interval: 5s
+#      timeout: 30s
+#      retries: 5
+#      start_period: 120s
+#    depends_on:
+#      devpkg-nuget-postgresql:
+#        condition: service_healthy
+#      devpkg-nuget:
+#        condition: service_healthy
+#      devpkg-funfair-release:
+#        condition: service_healthy
+#    networks:
+#      backend:
 
   devpkg-npm:
     image: verdaccio/verdaccio:latest
