@@ -16,8 +16,8 @@ git pull
 echo "Stopping containers"
 sudo docker compose stop && sudo docker compose rm --force
 
-echo "Removing DB"
-sudo rm -fr /cache/nuget/db
+#echo "Removing DB"
+#sudo rm -fr /cache/nuget/db
 
 echo "Removing NGINX cache"
 sudo rm -fr /cache/nginx
@@ -34,5 +34,5 @@ sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo docker compose pull || die "Could not pull images"
 sudo docker compose up --no-start || die "Could not build containers"
 
-sudo docker compose up -d || die "Could not start containers"
+sudo docker compose up -d --remove-orphans || die "Could not start containers"
 
