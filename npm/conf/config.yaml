@@ -16,4 +16,4 @@ packages:
     access: $anonymous
     publish: $anonymous
     proxy: npmjs
-log: { type: stdout, format: pretty, level: http }
+log: { type: stdout, format: pretty, level: info }

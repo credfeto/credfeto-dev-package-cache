@@ -35,7 +35,7 @@ done
 [ -z "$PACKAGE_VERSION" ] && die "Package Version not specified"
 
 WORKFOLDER=/tmp/pkg
-BASE=/cache/nuget/packages/nuget/packages/packages
+BASE=/cache/nuget/packages/nuget/packages
 LOWER_PACKAGEID=${PACKAGE_ID,,}
 
 PACKAGE_FOLDER=$BASE/$LOWER_PACKAGEID/$PACKAGE_VERSION
