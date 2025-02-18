@@ -7,4 +7,4 @@ OnCalendar=*:0/5
 AccuracySec=30
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=timers.target
