@@ -1,11 +1,16 @@
 storage: /verdaccio/storage
+web:
+  enable: false
 auth:
   htpasswd:
     file: ./htpasswd
-    max_users: -1    
+    max_users: -1
+server:
+  keepAliveTimout: 120
 uplinks:
   npmjs:
     url: https://registry.npmjs.org/
+
 packages:
 
   '@*/*':
