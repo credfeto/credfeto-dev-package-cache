@@ -67,12 +67,12 @@ services:
       - ./npm/conf:/verdaccio/conf
       - ./npm/plugins:/verdaccio/plugins
       - /cache/npm/storage:/verdaccio/storage
-    healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:8080 || exit 1
-      interval: 5s
-      timeout: 4s
-      retries: 5
-      start_period: 120s
+#    healthcheck:
+#      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:8080 || exit 1
+#      interval: 5s
+#      timeout: 4s
+#      retries: 5
+#      start_period: 120s
     networks:
       backend:
 
@@ -102,8 +102,8 @@ services:
         condition: service_healthy
       devpkg-funfair-release:
         condition: service_healthy
-      devpkg-npm:
-        condition: service_healthy
+#      devpkg-npm:
+#        condition: service_healthy
     networks:
       backend:
       frontend:
