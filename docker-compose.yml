@@ -79,7 +79,7 @@ services:
   devpkg-nginx:
     image: nginx:stable-alpine
     container_name: devpkg-nginx
-    restart: unless-stopped
+    restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
     volumes:
