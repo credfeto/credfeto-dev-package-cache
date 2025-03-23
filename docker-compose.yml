@@ -113,6 +113,7 @@ services:
           - funfair.nuget.local
           - funfair-prerelease.nuget.local
           - npm.local
+          - builds.dotnet.local
 
   cache:
     image: mcr.microsoft.com/dotnet/sdk:9.0
