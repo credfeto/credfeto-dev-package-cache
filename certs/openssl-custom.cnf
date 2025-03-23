@@ -17,4 +17,4 @@ CN = localhost
 [v3_req]
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = npm.local
+DNS.1 = builds.dotnet.local

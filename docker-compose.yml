@@ -83,8 +83,8 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./certs:/etc/nginx/ssl
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:r
+      - ./certs:/etc/nginx/ssl:r
       - /cache/nginx:/var/cache/nginx/proxy
     ports:
       - 5555:5555/tcp

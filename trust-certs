@@ -5,3 +5,4 @@ sudo trust anchor --store ./certs/funfair.nuget.local.pem
 sudo trust anchor --store ./certs/funfair-prerelease.nuget.local.pem
 sudo trust anchor --store ./certs/npm.local.pem
 sudo trust anchor --store ./certs/builds.dotnet.local.pem
+
