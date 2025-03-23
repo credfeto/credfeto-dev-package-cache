@@ -9,12 +9,13 @@ distinguished_name = dn
 C = GB
 ST = London
 L = London
-O = FunFair
-OU = FunFair Unit
-emailAddress = ssl-admin@funfair.io
-CN = localhost
+O = Test
+OU = Test Certificates
+emailAddress = ssl-admin@npm.local
+CN = npm.local
 
 [v3_req]
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = builds.dotnet.local
+DNS.1 = npm.local
+DNS.2 = localhost
