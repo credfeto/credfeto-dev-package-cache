@@ -1,4 +1,4 @@
 #! /bin/sh
 
 sudo cp ./certs/*.crt /usr/local/share/ca-certificates/
-sudo update-certificates
+sudo update-ca-certificates
