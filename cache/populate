@@ -12,9 +12,13 @@ TOOLS="sleet \
        FunFair.BuildVersion \
        Credfeto.Changelog.Cmd \
        Credfeto.Package.Push \
+       Credfeto.Package.Update \
        FunFair.Content.Packager.Cmd \
        FunFair.Content.PackageSigner.Cmd \
-       JetBrains.ReSharper.GlobalTools"
+       JetBrains.ReSharper.GlobalTools \
+       powershell \
+       dotnet-reportgenerator-globaltool \
+       csharpier"
 
 echo "HOME: $HOME"
 
