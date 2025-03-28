@@ -14,6 +14,8 @@ die() {
 git pull
 
 sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
+sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
+
 
 sudo docker compose pull || die "Could not pull images"
 sudo docker compose build || die "Could not build images"
