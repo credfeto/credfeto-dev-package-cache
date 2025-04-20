@@ -81,7 +81,7 @@ services:
     ports:
       - 8003:8080
     volumes:
-      - cache_npm_conf:./npm/conf:/verdaccio/conf
+      - cache_npm_conf:/verdaccio/conf
       - cache_npm_plugins:/verdaccio/plugins
       - cache_npm_storage:/verdaccio/storage
 #    healthcheck:
@@ -104,7 +104,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:r
       - ./certs:/etc/nginx/ssl:r
-      - /cache/nginx:/var/cache/nginx/proxy
+      - cache_nginx:/var/cache/nginx/proxy
     ports:
       - 5555:5555/tcp
       - 5554:5554/tcp
@@ -182,3 +182,4 @@ volumes:
   cache_npm_conf:
   cache_npm_plugins:
   cache_npm_storage:
+  cache_nginx:
