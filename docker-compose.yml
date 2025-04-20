@@ -18,7 +18,7 @@ services:
     ports:
       - 8000:8080
     volumes:
-      - cache_nuget_org:/data
+      - cache_api_nuget_org:/data
     labels:
       - "com.centurylinklabs.watchtower.enable=true"
     networks:
@@ -81,8 +81,7 @@ services:
     ports:
       - 8003:8080
     volumes:
-      - cache_npm_conf:/verdaccio/conf
-      - cache_npm_plugins:/verdaccio/plugins
+      - ./npm/conf:/verdaccio/conf
       - cache_npm_storage:/verdaccio/storage
 #    healthcheck:
 #      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:8080 || exit 1
@@ -176,10 +175,21 @@ networks:
     driver: bridge
 
 volumes:
-  cache_nuget_org:
+  cache_api_nuget_org:
+    name: cache_api_nuget_org
+    external: true
   cache_funfair_release:
+    name: cache_funfair_release
+    external: true
   cache_funfair_prerelease:
+    name: cache_funfair_prerelease
+    external: true
   cache_npm_conf:
-  cache_npm_plugins:
+    name: cache_npm_conf
+    external: true
   cache_npm_storage:
+    name: cache_npm_storage
+    external: true
   cache_nginx:
+    name: cache_nginx
+    external: true

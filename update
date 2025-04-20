@@ -10,12 +10,58 @@ die() {
 [ -d /cache/nginx ] || sudo mkdir /cache/nginx
 [ -d /cache/npm ] || sudo mkdir /cache/npm
 [ -d /cache/nuget ] || sudo mkdir /cache/nuget
+[ -d /cache/nuget/api.nuget.local ] || sudo mkdir /cache/nuget/api.nuget.local
+[ -d /cache/nuget/funfair.nuget.local ] || sudo mkdir /cache/nuget/funfair.nuget.local
+[ -d /cache/nuget/funfair-prerelease.nuget.local ] || sudo mkdir /cache/nuget/funfair-prerelease.nuget.local
+[ -d /cache/npm/storage ] || sudo mkdir /cache/npm/storage
 
 git pull
 
 sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
 
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/nuget/api.nuget.local \
+  cache_api_nuget_org
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/nuget/funfair.nuget.local \
+  cache_funfair_release
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/nuget/funfair-prerelease.nuget.local \
+  cache_funfair_prerelease
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/npm/storage \
+  cache_npm_storage
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/npm/storage \
+  cache_npm_storage
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/npm/storage \
+  cache_npm_storage
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/nginx \
+  cache_nginx
 
 sudo docker compose pull || die "Could not pull images"
 sudo docker compose build || die "Could not build images"
