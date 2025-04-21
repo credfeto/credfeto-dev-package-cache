@@ -135,7 +135,7 @@ services:
           - builds.dotnet.local
 
   cache:
-    image: mcr.microsoft.com/dotnet/sdk:9.0
+    build: ./nginx
     container_name: devpkg-cache
     restart: always
     stop_grace_period: 5s

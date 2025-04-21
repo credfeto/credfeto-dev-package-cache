@@ -1,5 +1,6 @@
 
-FROM alpine:latest
+#FROM alpine:latest
+FROM mcr.microsoft.com/dotnet/sdk:9.0
 
 WORKDIR /usr/src/app
 
