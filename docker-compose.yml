@@ -19,7 +19,6 @@ services:
       - cache_api_nuget_org:/data
     networks:
       backend:
-        ipv4_address: 172.16.22.10
 
   devpkg-funfair-release:
     image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
@@ -40,7 +39,6 @@ services:
       - cache_funfair_prerelease:/data
     networks:
       backend:
-        ipv4_address: 172.16.22.20
 
   devpkg-funfair-prerelease:
     image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
@@ -59,7 +57,6 @@ services:
       - cache_funfair_prerelease:/data
     networks:
       backend:
-        ipv4_address: 172.16.22.30
 
   devpkg-npm:
     image: verdaccio/verdaccio:latest
@@ -82,7 +79,6 @@ services:
 #      start_period: 120s
     networks:
       backend:
-        ipv4_address: 172.16.22.40
 
   devpkg-nginx:
     build: ./nginx
@@ -157,9 +153,6 @@ services:
 networks:
   backend:
     driver: bridge
-    ipam:
-      config:
-        - subnet: 172.16.22.0/24
 
   frontend:
     driver: bridge
