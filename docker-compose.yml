@@ -66,17 +66,17 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     environment:
-      - VERDACCIO_PORT=8080
+      - VERDACCIO_PORT=4873
       - VERDACCIO_PUBLIC_URL=https://npm.local:5555
     volumes:
       - ./npm/conf:/verdaccio/conf
       - cache_npm_storage:/verdaccio/storage
-#    healthcheck:
-#      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:8080 || exit 1
-#      interval: 5s
-#      timeout: 4s
-#      retries: 5
-#      start_period: 120s
+    healthcheck:
+      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:4873/-/ping -O /dev/null || exit 1
+      interval: 5s
+      timeout: 4s
+      retries: 5
+      start_period: 120s
     networks:
       backend:
 
@@ -91,6 +91,7 @@ services:
       - cache_nginx:/var/cache/nginx/proxy
     ports:
       - 5555:5555/tcp
+      - 5555:5555/udp
       - 5554:5554/tcp
     healthcheck:
       test: curl --fail http://localhost/health || exit 1
@@ -106,10 +107,7 @@ services:
       devpkg-funfair-release:
         condition: service_healthy
       devpkg-npm:
-        condition: service_started
-#        condition: service_healthy
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+        condition: service_healthy
     networks:
       backend:
       frontend:
