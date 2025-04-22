@@ -15,12 +15,8 @@ services:
       - Proxy__PublicUrl=https://api.nuget.local:5555
       - Proxy__Packages=/data
       - Proxy__JsonMaxAgeSeconds=30
-    ports:
-      - 8000:8080
     volumes:
       - cache_api_nuget_org:/data
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
     networks:
       backend:
 
@@ -41,8 +37,6 @@ services:
       - 8001:8080
     volumes:
       - cache_funfair_prerelease:/data
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
     networks:
       backend:
 
@@ -59,12 +53,8 @@ services:
       - Proxy__PublicUrl=https://funfair.nuget.local:5555
       - Proxy__Packages=/data
       - Proxy__JsonMaxAgeSeconds=600
-    ports:
-      - 8002:8080
     volumes:
       - cache_funfair_prerelease:/data
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
     networks:
       backend:
 
@@ -78,8 +68,6 @@ services:
     environment:
       - VERDACCIO_PORT=8080
       - VERDACCIO_PUBLIC_URL=https://npm.local:5555
-    ports:
-      - 8003:8080
     volumes:
       - ./npm/conf:/verdaccio/conf
       - cache_npm_storage:/verdaccio/storage
@@ -89,8 +77,6 @@ services:
 #      timeout: 4s
 #      retries: 5
 #      start_period: 120s
-    labels:
-      - "com.centurylinklabs.watchtower.enable=true"
     networks:
       backend:
 
@@ -143,8 +129,6 @@ services:
     depends_on:
       devpkg-nginx:
         condition: service_healthy
-    ports:
-      - 6666:6666
     volumes:
       - ./certs/api.nuget.local.pem:/usr/local/share/ca-certificates/api.nuget.local.crt:r
       - ./certs/funfair.nuget.local.pem:/usr/local/share/ca-certificates/funfair.nuget.local.crt:r
