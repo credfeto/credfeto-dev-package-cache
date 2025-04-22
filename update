@@ -65,7 +65,5 @@ sudo docker volume create \
 
 sudo docker compose pull || die "Could not pull images"
 sudo docker compose build || die "Could not build images"
-sudo docker compose up --no-start || die "Could not build containers"
 
-sudo docker compose down
-sudo docker compose up -d --remove-orphans || die "Could not start containers"
+sudo docker compose up -d --remove-orphans --build devpkg-nginx --build cache || die "Could not start containers"
