@@ -3,6 +3,23 @@
 
 services:
 
+  devpkg-restarter:
+    container_name: devpkg-restarter
+    build: ./restarter
+    hostname: restarter
+    restart: always
+    stop_grace_period: 5s
+    stop_signal: SIGINT
+#    network_mode: none
+#    cap_drop:
+#      - ALL
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - "autoheal=devpkg"
+    networks:
+      backend:
+
   devpkg-nuget:
     image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
     container_name: devpkg-nuget
@@ -17,6 +34,8 @@ services:
       - Proxy__JsonMaxAgeSeconds=30
     volumes:
       - cache_api_nuget_org:/data
+    labels:
+      - "autoheal=devpkg"
     networks:
       backend:
 
@@ -37,6 +56,8 @@ services:
       - 8001:8080
     volumes:
       - cache_funfair_prerelease:/data
+    labels:
+      - "autoheal=devpkg"
     networks:
       backend:
 
@@ -55,6 +76,8 @@ services:
       - Proxy__JsonMaxAgeSeconds=600
     volumes:
       - cache_funfair_prerelease:/data
+    labels:
+      - "autoheal=devpkg"
     networks:
       backend:
 
@@ -77,6 +100,8 @@ services:
       timeout: 4s
       retries: 5
       start_period: 120s
+    labels:
+      - "autoheal=devpkg"
     networks:
       backend:
 
@@ -93,12 +118,6 @@ services:
       - 5555:5555/tcp
       - 5555:5555/udp
       - 5554:5554/tcp
-    healthcheck:
-      test: curl --fail http://localhost/health || exit 1
-      interval: 5s
-      timeout: 4s
-      retries: 6
-      start_period: 120s
     depends_on:
       devpkg-nuget:
         condition: service_healthy
@@ -118,7 +137,7 @@ services:
           - npm.local
           - builds.dotnet.local
 
-  cache:
+  devpkg-cache:
     build: ./nginx
     container_name: devpkg-cache
     restart: always
@@ -144,7 +163,7 @@ services:
       retries: 5
       start_period: 120s
     labels:
-      - "com.centurylinklabs.watchtower.enable=true"
+      - "autoheal=devpkg"
     networks:
       frontend:
 
@@ -174,3 +193,4 @@ volumes:
   cache_nginx:
     name: cache_nginx
     external: true
+
