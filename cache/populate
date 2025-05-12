@@ -10,16 +10,7 @@ die() {
 apt update && apt upgrade -y && apt install ca-certificates bash -y
 update-ca-certificates
 
-export PROXY_HOST=http://builds.dotnet.local:5554/dotnet
 export DOTNET_ROOT="/usr/share/dotnet"
-
-echo "Changing install script to use local proxy cache.."
-sed -i "s|https://builds.dotnet.microsoft.com/dotnet|$PROXY_HOST|g" "/usr/src/app/dotnet-install.sh"
-sed -i "s|https://ci.dot.net/public|$PROXY_HOST/dotnet|g" "/usr/src/app/dotnet-install.sh"
-#sed -i "s|https://aka.ms/dotnet|https://builds.dotnet.local:5555/dotnet|g" "/usr/src/app/dotnet-install.sh"
-echo "Changing install script to use local proxy cache..."
-
-
 
 VERSIONS_TO_INSTALL="8.0 9.0 10.0"
 
