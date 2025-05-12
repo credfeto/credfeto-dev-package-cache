@@ -45,16 +45,21 @@ TOOLS="sleet \
 
 
 installDotNet() {
-    # Installing .net
-    for CHANNEL in $VERSIONS_TO_INSTALL
-    do
-      echo "**********************************************************************************************"
-      echo "* Installing dotnet $CHANNEL"
-      echo "**********************************************************************************************"
-      echo ""
-        /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
-        ls -laR $DOTNET_ROOT
-    done
+  # Installing .net
+  for CHANNEL in $VERSIONS_TO_INSTALL
+  do
+    echo "**********************************************************************************************"
+    echo "* Installing dotnet $CHANNEL"
+    echo "**********************************************************************************************"
+    echo ""
+      /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+  done
+  echo ""
+  echo "**********************************************************************************************"
+  echo "* Dotnet Installed"
+  echo "**********************************************************************************************"
+  echo ""
+  echo ""
 }
 
 update() {
@@ -70,10 +75,8 @@ update() {
 
 installDotNet
 
-ls -laR "$DOTNET_ROOT"
-
 [ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
-[ -d "$DOTNET_ROOT/dotnet" ] || die "Dotnet binaries not installed"
+[ -f "$DOTNET_ROOT/dotnet" ] || die "Dotnet binaries not installed"
 
 export PATH="$PATH:$HOME/.dotnet/tools"
 
