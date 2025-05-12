@@ -1,7 +1,13 @@
 #! /bin/sh
 
+die() {
+    echo
+    echo "$@"
+    exit 1
+}
+
 # Ensure CA Certs are installed
-apt update && apt upgrade -y && apt install ca-certificates -y
+apt update && apt upgrade -y && apt install ca-certificates bash -y
 update-ca-certificates
 
 export PROXY_HOST=http://builds.dotnet.local:5554/dotnet
