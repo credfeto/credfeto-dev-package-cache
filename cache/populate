@@ -72,7 +72,7 @@ installDotNet
 [ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
 [ -d "$DOTNET_ROOT/dotnet" ] || die "Dotnet binaries not installed"
 
-export PATH="$PATH:/root/.dotnet/tools"
+export PATH="$PATH:$HOME/.dotnet/tools"
 
 echo "HOME: $HOME"
 
