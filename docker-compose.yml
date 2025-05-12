@@ -148,14 +148,6 @@ services:
       - ./certs:/local/certs:r
       - ./nuget/NuGet.Config:/local/.nuget/NuGet/NuGet.Config:r
       - ./nuget/NuGet.Config:/root/.nuget/NuGet/NuGet.Config:r
-    command:
-      /root/populate
-    healthcheck:
-      test: /root/healthcheck
-      interval: 5s
-      timeout: 4s
-      retries: 5
-      start_period: 120s
     labels:
       - "autoheal=devpkg"
     networks:
