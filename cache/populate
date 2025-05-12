@@ -53,6 +53,7 @@ installDotNet() {
       echo "**********************************************************************************************"
       echo ""
         /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+        ls -laR $DOTNET_ROOT
     done
 }
 
