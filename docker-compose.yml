@@ -146,10 +146,8 @@ services:
         condition: service_healthy
     volumes:
       - ./certs:/local/certs:r
-      - ./certs/npm.local.crt:/usr/local/share/ca-certificates/npm.local.crt:r
-      - ./cache/populate:/root/populate:r
-      - ./cache/healthcheck:/root/healthcheck:r
-      - ./cache/nuget.config:/root/.nuget/NuGet/NuGet.Config:r
+      - ./nuget/NuGet.Config:/local/.nuget/NuGet/NuGet.Config:r
+      - ./nuget/NuGet.Config:/root/.nuget/NuGet/NuGet.Config:r
     command:
       /root/populate
     healthcheck:

@@ -3,7 +3,7 @@ FROM alpine:latest
 
 WORKDIR /usr/src/app
 
-COPY updater .
+COPY populate .
 COPY healthcheck .
 
 SHELL ["/bin/ash", "-o", "pipefail", "-c"]
