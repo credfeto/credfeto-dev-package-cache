@@ -145,9 +145,7 @@ services:
       devpkg-nginx:
         condition: service_healthy
     volumes:
-      - ./certs/api.nuget.local.pem:/usr/local/share/ca-certificates/api.nuget.local.crt:r
-      - ./certs/funfair.nuget.local.pem:/usr/local/share/ca-certificates/funfair.nuget.local.crt:r
-      - ./certs/funfair-prerelease.nuget.local.pem:/usr/local/share/ca-certificates/funfair-prerelease.nuget.local.crt:r
+      - ./certs:/local/certs:r
       - ./certs/npm.local.crt:/usr/local/share/ca-certificates/npm.local.crt:r
       - ./cache/populate:/root/populate:r
       - ./cache/healthcheck:/root/healthcheck:r
