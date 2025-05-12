@@ -38,16 +38,12 @@ RUN \
     curl https://dot.net/v1/dotnet-install.sh -L -o /usr/src/app/dotnet-install.sh && \
     sed -i "s|https://builds.dotnet.microsoft.com/dotnet|http://builds.dotnet.local:5554/dotnet|g" "/usr/src/app/dotnet-install.sh" && \
     sed -i "s|https://ci.dot.net/public|http://builds.dotnet.local:5554/dotnet/dotnet|g" "/usr/src/app/dotnet-install.sh" && \
-    chmod +x /usr/src/app/dotnet-install.sh
+    chmod +x /usr/src/app/dotnet-install.sh && \
+    ls -la /usr/src/app/
 
 USER updater
 
-RUN \
-    mkdir -p /local/tracking && \
-    mkdir -p /local/work && \
-    mkdir -p /local/dotnet && \
-    mkdir -p /local/.ssh && \
-    mkdir -p /local/.gnupg
+RUN mkdir -p /local/dotnet
 
 ENTRYPOINT [ "/usr/src/app/populate" ]
 
