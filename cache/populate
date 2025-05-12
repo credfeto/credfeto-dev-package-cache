@@ -77,6 +77,16 @@ dotnet tool restore
 
 
 update() {
+    # Installing .net
+    for VERSION in $VERSIONS_TO_INSTALL
+    do
+      echo "**********************************************************************************************"
+      echo "* Installing dotnet $VERSION"
+      echo "**********************************************************************************************"
+      echo ""
+        /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+    done
+
     echo "Updating packages:"
     for PACKAGE in ${TOOLS}; do
         echo "* Updating $PACKAGE..."
