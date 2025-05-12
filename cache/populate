@@ -29,21 +29,6 @@ export MSBUILDTERMINALLOGGER="auto"
 VERSIONS_TO_INSTALL="8.0 9.0 10.0"
 [ -f "/bin/bash" ] || die "bash not found"
 
-# Installing .net
-for VERSION in $VERSIONS_TO_INSTALL
-do
-  echo "**********************************************************************************************"
-  echo "* Installing dotnet $VERSION"
-  echo "**********************************************************************************************"
-  echo ""
-    /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
-done
-
-[ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
-[ -d "$DOTNET_ROOT/dotnet" ] || die "Dotnet binaries not installed"
-
-
-export PATH="$PATH:/root/.dotnet/tools"
 TOOLS="sleet \
        TSQLLint \
        FunFair.BuildCheck \
@@ -57,6 +42,37 @@ TOOLS="sleet \
        powershell \
        dotnet-reportgenerator-globaltool \
        csharpier"
+
+
+installDotNet() {
+    # Installing .net
+    for CHANNEL in $VERSIONS_TO_INSTALL
+    do
+      echo "**********************************************************************************************"
+      echo "* Installing dotnet $CHANNEL"
+      echo "**********************************************************************************************"
+      echo ""
+        /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+    done
+}
+
+update() {
+
+    echo "Updating packages:"
+    for PACKAGE in ${TOOLS}; do
+        echo "* Updating $PACKAGE..."
+        dotnet tool update --local "$PACKAGE" || dotnet tool install --local "$PACKAGE" --create-manifest-if-needed
+    done
+    echo "All packages updated"
+    dotnet tool list
+}
+
+installDotNet
+
+[ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
+[ -d "$DOTNET_ROOT/dotnet" ] || die "Dotnet binaries not installed"
+
+export PATH="$PATH:/root/.dotnet/tools"
 
 echo "HOME: $HOME"
 
@@ -76,25 +92,6 @@ echo "Restoring tools"
 dotnet tool restore
 
 
-update() {
-    # Installing .net
-    for VERSION in $VERSIONS_TO_INSTALL
-    do
-      echo "**********************************************************************************************"
-      echo "* Installing dotnet $VERSION"
-      echo "**********************************************************************************************"
-      echo ""
-        /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
-    done
-
-    echo "Updating packages:"
-    for PACKAGE in ${TOOLS}; do
-        echo "* Updating $PACKAGE..."
-        dotnet tool update --local "$PACKAGE" || dotnet tool install --local "$PACKAGE" --create-manifest-if-needed
-    done
-    echo "All packages updated"
-    dotnet tool list
-}
 
 dotnet tool list
 
@@ -109,6 +106,9 @@ echo "All tools installed"
 dotnet tool list
 
 while sleep 120; do
+
+    installDotNet
+
     update
 
     echo "Waiting for new packages..."
