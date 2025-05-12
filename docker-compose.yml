@@ -146,8 +146,6 @@ services:
         condition: service_healthy
     volumes:
       - ./certs:/local/certs:r
-      - ./nuget/NuGet.Config:/local/.nuget/NuGet/NuGet.Config:r
-      - ./nuget/NuGet.Config:/root/.nuget/NuGet/NuGet.Config:r
     labels:
       - "autoheal=devpkg"
     networks:
