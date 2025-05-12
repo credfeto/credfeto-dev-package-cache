@@ -13,6 +13,9 @@ doas cp "$HOME/certs/funfair.nuget.local.pem" /usr/local/share/ca-certificates/ 
 doas cp "$HOME/certs/funfair-prerelease.nuget.local.pem" /usr/local/share/ca-certificates/ || die "could not import funfair-prerelease.nuget.local.pem"
 doas update-ca-certificates || die "could not import certificates"
 
+cd "$HOME" || die "Could not switch to $HOME"
+pwd
+
 # Dotnet settings
 export DOTNET_ROOT="$HOME/dotnet"
 export DOTNET_INSTALL_DIR="$DOTNET_ROOT"
