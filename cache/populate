@@ -52,7 +52,8 @@ installDotNet() {
     echo "* Installing dotnet $CHANNEL"
     echo "**********************************************************************************************"
     echo ""
-      /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+    /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+    echo ""
   done
   echo ""
   echo "**********************************************************************************************"
