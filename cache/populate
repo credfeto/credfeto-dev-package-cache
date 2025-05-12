@@ -13,6 +13,12 @@ update-ca-certificates
 export DOTNET_ROOT="/usr/share/dotnet"
 
 VERSIONS_TO_INSTALL="8.0 9.0 10.0"
+BASH_EXE=
+[ -f "/bin/bash" ] && BASH_EXE=/bin/bash
+[ -f "/usr/bin/bash" ] && BASH_EXE=/usr/bin/bash
+[ -f "$BASH_EXE" ] || die "bash not found"
+[ -z "$BASH_EXE" ] && die "bash not found"
+echo "Using Bash at $BASH_EXE"
 
 # Installing .net
 for VERSION in $VERSIONS_TO_INSTALL
@@ -21,7 +27,7 @@ do
   echo "* Installing dotnet $VERSION"
   echo "**********************************************************************************************"
   echo ""
-    /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+    $BASH_EXE /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
 done
 
 [ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
