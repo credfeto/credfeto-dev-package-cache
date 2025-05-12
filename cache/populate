@@ -7,18 +7,27 @@ die() {
 }
 
 # Ensure CA Certs are installed
-apt update && apt upgrade -y && apt install ca-certificates bash -y
-update-ca-certificates
+# Adding Certificates
+doas cp "$HOME/certs/api.nuget.local.pem" /usr/local/share/ca-certificates/ || die "could not import api.nuget.local.pem"
+doas cp "$HOME/certs/funfair.nuget.local.pem" /usr/local/share/ca-certificates/ || die "could not import funfair.nuget.local.pem"
+doas cp "$HOME/certs/funfair-prerelease.nuget.local.pem" /usr/local/share/ca-certificates/ || die "could not import funfair-prerelease.nuget.local.pem"
+doas update-ca-certificates || die "could not import certificates"
 
-export DOTNET_ROOT="/usr/share/dotnet"
+# Dotnet settings
+export DOTNET_ROOT="$HOME/dotnet"
+export DOTNET_INSTALL_DIR="$DOTNET_ROOT"
+export DOTNET_MULTILEVEL_LOOKUP="false"
+export DOTNET_NOLOGO="true"
+export DOTNET_PRINT_TELEMETRY_MESSAGE="false"
+export DOTNET_JitCollect64BitCounts="1"
+export DOTNET_ReadyToRun="1"
+export DOTNET_TC_QuickJitForLoops="1"
+export DOTNET_TC_CallCountingDelayMs="0"
+export DOTNET_TieredPGO="1"
+export MSBUILDTERMINALLOGGER="auto"
 
 VERSIONS_TO_INSTALL="8.0 9.0 10.0"
-BASH_EXE=
-[ -f "/bin/bash" ] && BASH_EXE=/bin/bash
-[ -f "/usr/bin/bash" ] && BASH_EXE=/usr/bin/bash
-[ -f "$BASH_EXE" ] || die "bash not found"
-[ -z "$BASH_EXE" ] && die "bash not found"
-echo "Using Bash at $BASH_EXE"
+[ -f "/bin/bash" ] || die "bash not found"
 
 # Installing .net
 for VERSION in $VERSIONS_TO_INSTALL
@@ -27,7 +36,7 @@ do
   echo "* Installing dotnet $VERSION"
   echo "**********************************************************************************************"
   echo ""
-    $BASH_EXE /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+    /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
 done
 
 [ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
