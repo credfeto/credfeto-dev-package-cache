@@ -136,7 +136,7 @@ services:
           - builds.dotnet.local
 
   devpkg-cache:
-    build: ./nginx
+    build: ./cache
     container_name: devpkg-cache
     restart: always
     stop_grace_period: 5s
