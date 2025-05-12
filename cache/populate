@@ -4,6 +4,32 @@
 apt update && apt upgrade -y && apt install ca-certificates -y
 update-ca-certificates
 
+export PROXY_HOST=http://builds.dotnet.local:5554/dotnet
+export DOTNET_ROOT="/usr/share/dotnet"
+
+echo "Changing install script to use local proxy cache.."
+sed -i "s|https://builds.dotnet.microsoft.com/dotnet|$PROXY_HOST|g" "/usr/src/app/dotnet-install.sh"
+sed -i "s|https://ci.dot.net/public|$PROXY_HOST/dotnet|g" "/usr/src/app/dotnet-install.sh"
+#sed -i "s|https://aka.ms/dotnet|https://builds.dotnet.local:5555/dotnet|g" "/usr/src/app/dotnet-install.sh"
+echo "Changing install script to use local proxy cache..."
+
+
+
+VERSIONS_TO_INSTALL="8.0 9.0 10.0"
+
+# Installing .net
+for VERSION in $VERSIONS_TO_INSTALL
+do
+  echo "**********************************************************************************************"
+  echo "* Installing dotnet $VERSION"
+  echo "**********************************************************************************************"
+  echo ""
+    /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
+done
+
+[ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
+[ -d "$DOTNET_ROOT/dotnet" ] || die "Dotnet binaries not installed"
+
 
 export PATH="$PATH:/root/.dotnet/tools"
 TOOLS="sleet \
