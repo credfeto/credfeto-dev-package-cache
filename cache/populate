@@ -83,23 +83,21 @@ export PATH="$PATH:$HOME/dotnet:$HOME/.dotnet/tools"
 echo "HOME: $HOME"
 
 echo "Installed SDKS:"
-dotnet --list-sdks
+dotnet --list-sdks || die "Dotnet not found"
 
 echo "Waiting for start"
 sleep 30
 
 echo "Listing Nuget Sources"
-dotnet nuget list source
+dotnet nuget list source || die "Dotnet not found"
 
 echo "Clearing everything"
-dotnet nuget locals all --clear
+dotnet nuget locals all --clear || die "Dotnet not found"
 
 echo "Restoring tools"
 dotnet tool restore
 
-
-
-dotnet tool list
+dotnet tool list || die "Dotnet not found"
 
 echo "Installing tools:"
 for PACKAGE in ${TOOLS}; do
