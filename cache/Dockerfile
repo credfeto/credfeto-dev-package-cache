@@ -1,6 +1,5 @@
 
-#FROM alpine:latest
-FROM mcr.microsoft.com/dotnet/sdk:9.0
+FROM alpine:latest
 
 WORKDIR /usr/src/app
 
@@ -24,7 +23,6 @@ RUN apk add --no-cache \
         libstdc++ \
         openssh \
         sed \
-        bash \
         zlib
 
 # Add Updater group
