@@ -69,7 +69,7 @@ update() {
 
 installDotNet
 
-ls -laR $DOTNET_ROOT
+ls -laR "$DOTNET_ROOT"
 
 [ -d "$DOTNET_ROOT" ] || die "Dotnet not installed"
 [ -d "$DOTNET_ROOT/dotnet" ] || die "Dotnet binaries not installed"
