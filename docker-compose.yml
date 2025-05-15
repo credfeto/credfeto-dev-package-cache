@@ -180,6 +180,9 @@ networks:
     driver: bridge
 
 volumes:
+  cache_proxy:
+    name: cache_proxy
+    external: true
   cache_api_nuget_org:
     name: cache_api_nuget_org
     external: true
