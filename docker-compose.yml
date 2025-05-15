@@ -18,10 +18,10 @@ services:
 #    networks:
 #      backend:
 
-  devpkg-sotnet:
+  devpkg-dotnet:
     image: docker-registry.markridgwell.com/credfeto/cache-proxy:latest
     container_name: devpkg-dotnet
-    hostname: nuget
+    hostname: dotnet
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
