@@ -18,6 +18,27 @@ services:
 #    networks:
 #      backend:
 
+  devpkg-sotnet:
+    image: docker-registry.markridgwell.com/credfeto/cache-proxy:latest
+    container_name: devpkg-dotnet
+    hostname: nuget
+    restart: always
+    stop_grace_period: 500s
+    stop_signal: SIGINT
+    environment:
+      - Proxy__UpstreamUrl__0=https://api.nuget.org
+      - Proxy__PublicUrl=https://api.nuget.local:5555
+      - Proxy__Packages=/data
+      - Proxy__JsonMaxAgeSeconds=30
+    ports:
+      - 8000:8080
+    volumes:
+      - cache_proxy:/data
+    labels:
+      - "autoheal=devpkg"
+    networks:
+      backend:
+
   devpkg-nuget:
     image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
     container_name: devpkg-nuget
