@@ -18,10 +18,10 @@ services:
 #    networks:
 #      backend:
 
-  devpkg-dotnet:
+  devpkg-proxy:
     image: docker-registry.markridgwell.com/credfeto/cache-proxy:latest
-    container_name: devpkg-dotnet
-    hostname: dotnet
+    container_name: devpkg-proxy
+    hostname: proxy
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
