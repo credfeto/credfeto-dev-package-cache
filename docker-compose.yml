@@ -138,6 +138,8 @@ services:
       - 5555:5555/udp
       - 5554:5554/tcp
     depends_on:
+      devpkg-proxy:
+        condition: service_healthy
       devpkg-nuget:
         condition: service_healthy
       devpkg-funfair-prerelease:
