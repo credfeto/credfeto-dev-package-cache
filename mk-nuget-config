@@ -13,5 +13,5 @@ SOURCE="$BASEDIR/nuget.config"
 
 [ -f "$SOURCE" ] || die "Could not find $SOURCE"
 
-rm ~/.nuget/NuGet/NuGet.Config
+rm "$HOME/.nuget/NuGet/NuGet.Config"
 ln -s "$SOURCE" "$HOME/.nuget/NuGet/NuGet.Config"
