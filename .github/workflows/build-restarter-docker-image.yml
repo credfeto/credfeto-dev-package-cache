@@ -5,10 +5,10 @@ on:
       - main
     paths:
       - "nginx/**/*"
-      - .github/workflows/build-nginx-docker-image.yml
+      - .github/workflows/build-restarter-docker-image.yml
 
 concurrency:
-  group: "${{github.workflow}}-${{github.ref}}-nxinx-docker-image"
+  group: "${{github.workflow}}-${{github.ref}}-restarter-docker-image"
   cancel-in-progress: false
 
 permissions:
@@ -18,7 +18,7 @@ jobs:
   build-nginx-docker-image:
     env:
       APP_OWNER: credfeto
-      APP_NAME: cache-nginx
+      APP_NAME: cache-restarter
       CONTAINER_REGISTRY: ${{secrets.CONTAINER_REGISTRY}}
 
     runs-on: ubuntu-latest
@@ -41,7 +41,7 @@ jobs:
       - name: "Docker: Test Build"
         uses: docker/build-push-action@v6.15.0
         with:
-          context: ${{github.workspace}}/nginx
+          context: ${{github.workspace}}/restarter
           platforms: linux/amd64
           load: true
           tags: |
@@ -51,7 +51,7 @@ jobs:
       - name: "Docker: Build with tags"
         uses: docker/build-push-action@v6.15.0
         with:
-          context: ${{github.workspace}}/nginx
+          context: ${{github.workspace}}/restarter
           platforms: linux/amd64
           push: true
           tags: |
