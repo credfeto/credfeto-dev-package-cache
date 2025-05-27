@@ -1,4 +1,4 @@
-name: "Build: Nginx Docker Image"
+name: "Build: Restarter Docker Image"
 on:
   push:
     branches:
