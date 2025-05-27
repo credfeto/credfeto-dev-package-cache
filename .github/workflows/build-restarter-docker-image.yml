@@ -4,7 +4,7 @@ on:
     branches:
       - main
     paths:
-      - "nginx/**/*"
+      - "restarter/**/*"
       - .github/workflows/build-restarter-docker-image.yml
 
 concurrency:
