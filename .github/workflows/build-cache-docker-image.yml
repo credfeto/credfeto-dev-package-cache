@@ -28,7 +28,6 @@ jobs:
         with:
           fetch-depth: 0
           fetch-tags: true
-          token: ${{secrets.SOURCE_PUSH_TOKEN}}
 
       - name: "Show Version and tag name"
         shell: bash
