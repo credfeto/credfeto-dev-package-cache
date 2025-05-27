@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - "nginx/**/*"
-      - .github/workflows/build-cache-docker-image.yml
+      - .github/workflows/build-nginx-docker-image.yml
 
 concurrency:
   group: "${{github.workflow}}-${{github.ref}}-cache-docker-image"
