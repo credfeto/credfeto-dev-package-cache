@@ -29,13 +29,6 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: "Show Version and tag name"
-        shell: bash
-        run: |
-          echo "BUILD_VERSION: ${{steps.version.outputs.BUILD_VERSION}}"
-          echo "TAG: ${{steps.version.outputs.TAG}}"
-          echo "VERSION: ${{env.VERSION}}"
-
       - name: "Set up Docker Buildx"
         uses: docker/setup-buildx-action@v3.0.0
 
@@ -54,8 +47,6 @@ jobs:
           tags: |
             ${{env.APP_OWNER}}/${{env.APP_NAME}}:test
           provenance: false
-          build-args:
-            VERSION=${{steps.version.outputs.BUILD_VERSION}}
 
       - name: "Docker: Build with tags"
         uses: docker/build-push-action@v6.15.0
@@ -66,8 +57,6 @@ jobs:
           tags: |
             ${{env.CONTAINER_REGISTRY}}${{env.APP_OWNER}}/${{env.APP_NAME}}:latest
           provenance: false
-          build-args:
-            VERSION=${{steps.version.outputs.BUILD_VERSION}}
 
       - name: "Docker Trust Restore"
         shell: bash
