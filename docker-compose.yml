@@ -125,7 +125,7 @@ services:
       backend:
 
   devpkg-nginx:
-    build: ./nginx
+    image: docker-registry.markridgwell.com/credfeto/cache-nginx:latest
     container_name: devpkg-nginx
     restart: always
     stop_grace_period: 5s

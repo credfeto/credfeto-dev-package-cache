@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 jobs:
-  build-cache-docker-image:
+  build-nginx-docker-image:
     env:
       APP_OWNER: credfeto
       APP_NAME: cache-nginx
