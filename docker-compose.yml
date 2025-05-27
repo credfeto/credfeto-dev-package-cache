@@ -4,8 +4,8 @@
 services:
 
   devpkg-restarter:
+    image: docker-registry.markridgwell.com/credfeto/cache-restarter:latest
     container_name: devpkg-restarter
-    build: ./restarter
     hostname: restarter
     restart: always
     stop_grace_period: 5s
