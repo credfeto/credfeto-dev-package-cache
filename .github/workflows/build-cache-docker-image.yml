@@ -55,7 +55,7 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: |
-            ${{env.CONTAINER_REGISTRY}}${{env.APP_OWNER}}/${{env.APP_NAME}}:latest
+            ${{env.CONTAINER_REGISTRY}}/${{env.APP_OWNER}}/${{env.APP_NAME}}:latest
           provenance: false
 
       - name: "Docker Trust Restore"
