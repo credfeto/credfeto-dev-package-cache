@@ -68,6 +68,7 @@ services:
     environment:
       - Proxy__UpstreamUrl__0=https://dotnet-nuget.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrl__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget
+      - Proxy__UpstreamUrl__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget
       - Proxy__PublicUrl=https://funfair.nuget.local:5555
       - Proxy__Packages=/data
       - Proxy__JsonMaxAgeSeconds=600
@@ -90,6 +91,7 @@ services:
     environment:
       - Proxy__UpstreamUrl__0=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrl__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget-prerelease
+      - Proxy__UpstreamUrl__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget-prerelease
       - Proxy__PublicUrl=https://funfair.nuget.local:5555
       - Proxy__Packages=/data
       - Proxy__JsonMaxAgeSeconds=600
