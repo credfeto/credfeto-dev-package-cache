@@ -34,4 +34,6 @@ sudo systemctl enable credfeto-package-cache.timer
 echo "Start credfeto-package-cache.timer"
 sudo systemctl start credfeto-package-cache.timer
 
+"$BASEDIR/update"
+
 echo "Done"
