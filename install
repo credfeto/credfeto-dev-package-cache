@@ -16,6 +16,14 @@ echo "Updating systemd scripts"
 cat "systemd-unit/credfeto-package-cache.service" | sed "s:/home/markr/work/credfeto-dev-package-cache:$BASEDIR:g" | sudo tee /etc/systemd/system/credfeto-package-cache.service
 sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.timer" /etc/systemd/system/credfeto-package-cache.timer
 
+. /etc/os-release
+if [ "$ID" = "arch" ]; then
+  "$BASEDIR/trust-certs.arch"
+elif [ "$ID" = "ubuntu" ]; then
+  "$BASEDIR/trust-certs.ubuntu"
+else
+  echo "Unsupported OS - you need to trust the local certs manually"
+fi
 
 echo "systemd reload"
 sudo systemctl daemon-reload
