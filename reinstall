@@ -16,11 +16,11 @@ git pull
 echo "Stopping containers"
 sudo docker compose stop && sudo docker compose rm --force
 
-#echo "Removing DB"
-#sudo rm -fr /cache/nuget/db
+[ -d /cache ] || sudo mkdir /cache
 
 echo "Removing NGINX cache"
 sudo rm -fr /cache/nginx
+
 
 [ -d /cache/nginx ] || sudo mkdir /cache/nginx
 [ -d /cache/npm ] || sudo mkdir /cache/npm
