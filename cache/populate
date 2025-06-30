@@ -27,6 +27,9 @@ extract_dotnet_package() {
     local zip_path="$1"
     local out_path="$2"
 
+    echo "Zip: $zip_path"
+    echo "Out : $out_path"
+
     local temp_out_path="$(mktemp -d "$temporary_file_template")"
 
     echo "Temp: $temp_out_path"
@@ -164,6 +167,7 @@ export DOTNET_TieredPGO="1"
 export MSBUILDTERMINALLOGGER="auto"
 
 [ -f "/bin/bash" ] || die "bash not found"
+[ -f "/bin/tar" ] || die "tar not found"
 
 TOOLS="sleet \
        TSQLLint \
