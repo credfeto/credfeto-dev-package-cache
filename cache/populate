@@ -37,7 +37,7 @@ extract_dotnet_package() {
 
     echo "Extracting..."
     local failed=false
-    doas tar -xzfv "$zip_path" -C "$temp_out_path"  || failed=true
+    doas tar -xvzf "$zip_path" -C "$temp_out_path"  || failed=true
 
     echo "Verson"
     local folders_with_version_regex='^.*/[0-9]+\.[0-9]+[^/]+/'
@@ -145,6 +145,10 @@ say_verbose() {
     if [ "$verbose" = true ]; then
         say "$1"
     fi
+}
+
+say_err() {
+  say "$1"
 }
 
 # Ensure CA Certs are installed
