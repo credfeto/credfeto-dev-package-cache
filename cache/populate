@@ -40,11 +40,7 @@ TOOLS="sleet \
        Credfeto.Package.Push \
        Credfeto.Package.Update \
        FunFair.Content.Packager.Cmd \
-       FunFair.Content.PackageSigner.Cmd \
-       JetBrains.ReSharper.GlobalTools \
-       powershell \
-       dotnet-reportgenerator-globaltool \
-       csharpier"
+       FunFair.Content.PackageSigner.Cmd"
 
 
 installDotNet() {
