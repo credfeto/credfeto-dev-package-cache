@@ -1,5 +1,13 @@
 #! /bin/sh
 
+temporary_file_template="${TMPDIR:-/tmp}/dotnet.XXXXXXXXX"
+
+DOTNET_SOURCE=https://builds.dotnet.microsoft.com
+PROXY_HOST=http://builds.dotnet.local:5554
+
+VERSIONS_TO_INSTALL="8.0 9.0 10.0"
+
+
 die() {
     echo
     echo "$@"
@@ -149,10 +157,6 @@ export DOTNET_TC_CallCountingDelayMs="0"
 export DOTNET_TieredPGO="1"
 export MSBUILDTERMINALLOGGER="auto"
 
-DOTNET_SOURCE=https://builds.dotnet.microsoft.com
-PROXY_HOST=http://builds.dotnet.local:5554
-
-VERSIONS_TO_INSTALL="8.0 9.0 10.0"
 [ -f "/bin/bash" ] || die "bash not found"
 
 TOOLS="sleet \
