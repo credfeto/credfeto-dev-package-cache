@@ -53,4 +53,4 @@ ENV PACKAGES="$PACKAGES"
 ENV TEMPLATE="$TEMPLATE"
 ENV RELEASE="$$RELEASE"
 
-HEALTHCHECK --interval=5s --timeout=2s --retries=3 --start-period=60s CMD [ "/usr/src/app/healthcheck" ]
+#HEALTHCHECK --interval=5s --timeout=2s --retries=3 --start-period=60s CMD [ "/usr/src/app/healthcheck" ]
