@@ -34,6 +34,7 @@ services:
       - 8000:8080
     volumes:
       - cache_proxy:/data
+      - ./certs/builds.dotnet.local.pfx:/usr/src/app/server.pfx:r
     labels:
       - "autoheal=devpkg"
     networks:
@@ -53,6 +54,7 @@ services:
       - Proxy__JsonMaxAgeSeconds=30
     volumes:
       - cache_api_nuget_org:/data
+      - ./certs/api.nuget.local.pfx:/usr/src/app/server.pfx:r
     labels:
       - "autoheal=devpkg"
     networks:
@@ -76,6 +78,7 @@ services:
       - 8001:8080
     volumes:
       - cache_funfair_prerelease:/data
+      - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
     labels:
       - "autoheal=devpkg"
     networks:
@@ -97,6 +100,7 @@ services:
       - Proxy__JsonMaxAgeSeconds=600
     volumes:
       - cache_funfair_prerelease:/data
+      - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
     labels:
       - "autoheal=devpkg"
     networks:
