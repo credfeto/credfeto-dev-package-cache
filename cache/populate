@@ -1,6 +1,10 @@
 #! /bin/bash
 
-temporary_file_template="${TMPDIR:-/tmp}/dotnet.XXXXXXXXX"
+TMPBASE=${TMPDIR:-/tmp}
+echo "$TMPBASE"
+
+[ -d "$TMPBASE" ] || mkdir -p "$TMPBASE"
+temporary_file_template="$TMPBASE/dotnet.XXXXXXXXX"
 
 DOTNET_SOURCE=https://builds.dotnet.microsoft.com
 PROXY_HOST=http://builds.dotnet.local:5554
@@ -24,6 +28,8 @@ extract_dotnet_package() {
     local out_path="$2"
 
     local temp_out_path="$(mktemp -d "$temporary_file_template")"
+
+    echo "Temp: $temp_out_path"
 
     local failed=false
     tar -xzf "$zip_path" -C "$temp_out_path" > /dev/null || failed=true
@@ -194,6 +200,8 @@ installDotNet() {
      echo "*       Current SDK: $SDK_VERSION"
      echo "**********************************************************************************************"
      echo ""
+     echo "Download $PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-x64.tar.gz"
+     echo " to $TEMPORARY_FILE"
      curl --max-time 10 \
           --retry 5 \
           --retry-delay 1 \
