@@ -5,6 +5,7 @@ echo "$TMPBASE"
 
 [ -d "$TMPBASE" ] || mkdir -p "$TMPBASE"
 temporary_file_template="$TMPBASE/dotnet.XXXXXXXXX"
+#override_non_versioned_files=true
 
 DOTNET_SOURCE=https://builds.dotnet.microsoft.com
 PROXY_HOST=https://builds.dotnet.local:5555
