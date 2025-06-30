@@ -7,7 +7,7 @@ echo "$TMPBASE"
 temporary_file_template="$TMPBASE/dotnet.XXXXXXXXX"
 
 DOTNET_SOURCE=https://builds.dotnet.microsoft.com
-PROXY_HOST=http://builds.dotnet.local:5554
+PROXY_HOST=https://builds.dotnet.local:5555
 
 VERSIONS_TO_INSTALL="8.0 9.0 10.0"
 
@@ -190,7 +190,6 @@ installDotNet() {
                             --retry 5 \
                             --retry-delay 1 \
                             --retry-max-time 40 \
-                            -s \
                             -L \
                             -f \
                             "$DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version" || die "Could not read SDK Version from $DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version")
