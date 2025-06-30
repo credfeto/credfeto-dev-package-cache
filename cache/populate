@@ -44,6 +44,8 @@ extract_dotnet_package() {
     doas rm -rf "$temp_out_path"
     doas rm -f "$zip_path" && say_verbose "Temporary archive file $zip_path was removed"
 
+    [ -f "$out_path/dotnet" ] || echo "Missing dotnet"
+    [ -f "$out_path/dotnet" ] || failed=true
 
     if [ "$failed" = true ]; then
         say_err "Extraction failed"
