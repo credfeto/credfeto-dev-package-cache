@@ -184,6 +184,8 @@ TOOLS="sleet \
 
 installDotNet() {
   [ -d "/usr/share/dotnet" ] && doas rm -fr /usr/share/dotnet
+  doas mkdir -p /usr/share/dotnet
+  doas chmod 777 /usr/share/dotnet
 
   for VERSION in $VERSIONS_TO_INSTALL; do
 
