@@ -73,6 +73,7 @@ copy_files_or_dirs_from_list() {
     cat | uniq | while read -r file_path; do
         local path="$(remove_beginning_slash "${file_path#$root_path}")"
         local target="$out_path/$path"
+        echo "*** $path >>>> $target"
         if [ "$override" = true ] || (! ([ -d "$target" ] || [ -e "$target" ])); then
             doas mkdir -p "$out_path/$(dirname "$path")"
             if [ -d "$target" ]; then
