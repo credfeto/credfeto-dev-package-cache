@@ -60,11 +60,11 @@ copy_files_or_dirs_from_list() {
         local path="$(remove_beginning_slash "${file_path#$root_path}")"
         local target="$out_path/$path"
         if [ "$override" = true ] || (! ([ -d "$target" ] || [ -e "$target" ])); then
-            sudo mkdir -p "$out_path/$(dirname "$path")"
+            doas mkdir -p "$out_path/$(dirname "$path")"
             if [ -d "$target" ]; then
-                sudo rm -rf "$target"
+                doas rm -rf "$target"
             fi
-            sudo cp -R $override_switch "$root_path/$path" "$target"
+            doas cp -R $override_switch "$root_path/$path" "$target"
         fi
     done
 }
@@ -81,20 +81,20 @@ get_cp_options() {
         override_switch="-n"
 
         # create temporary files to check if 'cp -u' is supported
-        tmp_dir="$(sudo mktemp -d)"
+        tmp_dir="$(doas mktemp -d)"
         tmp_file="$tmp_dir/testfile"
         tmp_file2="$tmp_dir/testfile2"
 
-        sudo touch "$tmp_file"
+        doas touch "$tmp_file"
 
         # use -u instead of -n if it's available
-        if sudo cp -u "$tmp_file" "$tmp_file2" 2>/dev/null; then
+        if doas cp -u "$tmp_file" "$tmp_file2" 2>/dev/null; then
             override_switch="-u"
         fi
 
         # clean up
-        sudo rm -f "$tmp_file" "$tmp_file2"
-        sudo rm -rf "$tmp_dir"
+        doas rm -f "$tmp_file" "$tmp_file2"
+        doas rm -rf "$tmp_dir"
     fi
 
     echo "$override_switch"
@@ -171,7 +171,7 @@ TOOLS="sleet \
 
 
 installDotNet() {
-  [ -d "/usr/share/dotnet" ] && sudo rm -fr /usr/share/dotnet
+  [ -d "/usr/share/dotnet" ] && doas rm -fr /usr/share/dotnet
 
   for VERSION in $VERSIONS_TO_INSTALL; do
 
