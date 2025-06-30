@@ -34,6 +34,9 @@ RUN \
     adduser -S -D "updater" -G "updater" -h /local && \
     chmod -R 700 /local && \
     echo 'permit nopass :updater as root' > /etc/doas.d/doas.conf && \
+    # Get dotnet install script \
+    curl https://dot.net/v1/dotnet-install.sh -L -o /usr/src/app/dotnet-install.sh && \
+    chmod +x /usr/src/app/dotnet-install.sh && \
     ls -la /usr/src/app/ && \
     mkdir -p /local/.nuget/NuGet && \
     cp /usr/src/app/nuget.config /local/.nuget/NuGet/NuGet.Config && \
@@ -53,4 +56,4 @@ ENV PACKAGES="$PACKAGES"
 ENV TEMPLATE="$TEMPLATE"
 ENV RELEASE="$$RELEASE"
 
-#HEALTHCHECK --interval=5s --timeout=2s --retries=3 --start-period=60s CMD [ "/usr/src/app/healthcheck" ]
+HEALTHCHECK --interval=5s --timeout=2s --retries=3 --start-period=60s CMD [ "/usr/src/app/healthcheck" ]
