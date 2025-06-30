@@ -39,9 +39,7 @@ RUN \
     cp /usr/src/app/nuget.config /local/.nuget/NuGet/NuGet.Config && \
     chown -R updater:updater /local && \
     mkdir -p /root/.nuget/NuGet && \
-    cp /usr/src/app/nuget.config /root/.nuget/NuGet/NuGet.Config && \
-    mkdir /tmp && \
-    chmod 777 /tmp
+    cp /usr/src/app/nuget.config /root/.nuget/NuGet/NuGet.Config
 
 USER updater
 
