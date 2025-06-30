@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 temporary_file_template="${TMPDIR:-/tmp}/dotnet.XXXXXXXXX"
 
