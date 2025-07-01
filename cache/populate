@@ -1,9 +1,155 @@
-#! /bin/sh
+#! /bin/bash
+
+TMPBASE=${TMPDIR:-$HOME/tmp}
+echo "$TMPBASE"
+
+[ -d "$TMPBASE" ] || mkdir -p "$TMPBASE"
+temporary_file_template="$TMPBASE/dotnet.XXXXXXXXX"
+override_non_versioned_files=true
+
+DOTNET_SOURCE=https://builds.dotnet.microsoft.com
+PROXY_HOST=https://builds.dotnet.local:5555
+
+VERSIONS_TO_INSTALL="8.0 9.0 10.0"
+
 
 die() {
     echo
     echo "$@"
     exit 1
+}
+
+# args:
+# zip_path - $1
+# out_path - $2
+extract_dotnet_package() {
+    eval $invocation
+
+    local zip_path="$1"
+    local out_path="$2"
+
+    echo "Zip: $zip_path"
+    echo "Out : $out_path"
+
+    local temp_out_path="$(mktemp -d "$temporary_file_template")"
+
+    echo "Temp: $temp_out_path"
+
+    echo "Extracting..."
+    local failed=false
+    doas tar -xvzf "$zip_path" -C "$temp_out_path"  || failed=true
+
+    echo "Verson"
+    local folders_with_version_regex='^.*/[0-9]+\.[0-9]+[^/]+/'
+    find "$temp_out_path" -type f | grep -Eo "$folders_with_version_regex" | sort | copy_files_or_dirs_from_list "$temp_out_path" "$out_path" false
+    find "$temp_out_path" -type f | grep -Ev "$folders_with_version_regex" | copy_files_or_dirs_from_list "$temp_out_path" "$out_path" "$override_non_versioned_files"
+
+    doas rm -rf "$temp_out_path"
+    doas rm -f "$zip_path" && say_verbose "Temporary archive file $zip_path was removed"
+
+    [ -f "$out_path/dotnet" ] || echo "Missing dotnet"
+    [ -f "$out_path/dotnet" ] || failed=true
+
+    if [ "$failed" = true ]; then
+        say_err "Extraction failed"
+        return 1
+    fi
+    return 0
+}
+
+# args:
+# input_files - stdin
+# root_path - $1
+# out_path - $2
+# override - $3
+copy_files_or_dirs_from_list() {
+    eval $invocation
+
+    local root_path="$(remove_trailing_slash "$1")"
+    local out_path="$(remove_trailing_slash "$2")"
+    local override="$3"
+    local override_switch="$(get_cp_options "$override")"
+
+    cat | uniq | while read -r file_path; do
+        local path="$(remove_beginning_slash "${file_path#$root_path}")"
+        local target="$out_path/$path"
+        echo "*** $path >>>> $target"
+        if [ "$override" = true ] || (! ([ -d "$target" ] || [ -e "$target" ])); then
+            doas mkdir -p "$out_path/$(dirname "$path")"
+            if [ -d "$target" ]; then
+                doas rm -rf "$target"
+            fi
+            doas cp -R $override_switch "$root_path/$path" "$target"
+        fi
+    done
+}
+
+# args:
+# override - $1 (boolean, true or false)
+get_cp_options() {
+    eval $invocation
+
+    local override="$1"
+    local override_switch=""
+
+    if [ "$override" = false ]; then
+        override_switch="-n"
+
+        # create temporary files to check if 'cp -u' is supported
+        tmp_dir="$(doas mktemp -d)"
+        tmp_file="$tmp_dir/testfile"
+        tmp_file2="$tmp_dir/testfile2"
+
+        doas touch "$tmp_file"
+
+        # use -u instead of -n if it's available
+        if doas cp -u "$tmp_file" "$tmp_file2" 2>/dev/null; then
+            override_switch="-u"
+        fi
+
+        # clean up
+        doas rm -f "$tmp_file" "$tmp_file2"
+        doas rm -rf "$tmp_dir"
+    fi
+
+    echo "$override_switch"
+}
+
+
+# args:
+# input - $1
+remove_trailing_slash() {
+    #eval $invocation
+
+    local input="${1:-}"
+    echo "${input%/}"
+    return 0
+}
+
+# args:
+# input - $1
+remove_beginning_slash() {
+    #eval $invocation
+
+    local input="${1:-}"
+    echo "${input#/}"
+    return 0
+}
+
+say() {
+    # using stream 3 (defined in the beginning) to not interfere with stdout of functions
+    # which may be used as return value
+    printf "%b\n" "${cyan:-}dotnet-install:${normal:-} $1" >&3
+}
+
+say_verbose() {
+    if [ "$verbose" = true ]; then
+        say "$1"
+    fi
+}
+
+say_err() {
+  say "$1"
 }
 
 # Ensure CA Certs are installed
@@ -30,8 +176,8 @@ export DOTNET_TC_CallCountingDelayMs="0"
 export DOTNET_TieredPGO="1"
 export MSBUILDTERMINALLOGGER="auto"
 
-VERSIONS_TO_INSTALL="8.0 9.0 10.0"
 [ -f "/bin/bash" ] || die "bash not found"
+[ -f "/bin/tar" ] || die "tar not found"
 
 TOOLS="sleet \
        TSQLLint \
@@ -45,16 +191,49 @@ TOOLS="sleet \
 
 
 installDotNet() {
-  # Installing .net
-  for CHANNEL in $VERSIONS_TO_INSTALL
-  do
-    echo "**********************************************************************************************"
-    echo "* Installing dotnet $CHANNEL"
-    echo "**********************************************************************************************"
-    echo ""
-    /bin/bash /usr/src/app/dotnet-install.sh --install-dir "$DOTNET_ROOT" -channel "$CHANNEL"
-    echo ""
-  done
+  [ -d "/usr/share/dotnet" ] && doas rm -fr /usr/share/dotnet
+  doas mkdir -p /usr/share/dotnet
+  doas chmod 777 /usr/share/dotnet
+
+  for VERSION in $VERSIONS_TO_INSTALL; do
+
+     SDK_VERSION=$(curl --connect-timeout 5 \
+                            --max-time 10 \
+                            --retry 5 \
+                            --retry-delay 1 \
+                            --retry-max-time 40 \
+                            -L \
+                            -f \
+                            "$DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version" || die "Could not read SDK Version from $DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version")
+
+
+     TEMPORARY_FILE="$(mktemp "$temporary_file_template")"
+
+
+     echo "**********************************************************************************************"
+     echo "* Installing dotnet: $VERSION"
+     echo "*       Current SDK: $SDK_VERSION"
+     echo "**********************************************************************************************"
+     echo ""
+     echo "Download $PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz"
+     echo " to $TEMPORARY_FILE"
+     curl --max-time 10 \
+          --retry 5 \
+          --retry-delay 1 \
+          --retry-max-time 40 \
+          -s \
+          -L \
+          -f \
+          "$PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-x64.tar.gz" \
+          -o "$TEMPORARY_FILE" || die "Could not download: $PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz"
+
+     [ -f "$TEMPORARY_FILE" ] || die "Temp file not downloaded"
+     extract_dotnet_package "$TEMPORARY_FILE" "/usr/share/dotnet" || die "Could not install"
+
+     /usr/share/dotnet/dotnet --list-sdks
+
+     echo ""
+   done
   echo ""
   echo "**********************************************************************************************"
   echo "* Dotnet Installed"
