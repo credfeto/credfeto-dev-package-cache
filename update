@@ -15,6 +15,7 @@ die() {
 [ -d /cache/nuget/funfair-prerelease.nuget.local ] || sudo mkdir /cache/nuget/funfair-prerelease.nuget.local
 [ -d /cache/npm/storage ] || sudo mkdir /cache/npm/storage
 [ -d /cache/proxy ] || sudo mkdir /cache/proxy
+[ -d /cache/downloads ] || sudo mkdir /cache/downloads
 
 git pull
 
@@ -22,6 +23,13 @@ sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
 sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"
 
+export COMPOSE_BAKE=true
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
+  --opt device=/cache/downloads \
+  cache_downloads
 
 sudo docker volume create \
   --opt type=none \
@@ -29,7 +37,6 @@ sudo docker volume create \
   --opt device=/cache/proxy \
   cache_proxy
 
-export COMPOSE_BAKE=true
 
 sudo docker volume create \
   --opt type=none \
