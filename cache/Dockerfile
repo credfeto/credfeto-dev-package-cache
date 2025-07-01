@@ -32,7 +32,7 @@ RUN \
     # Add updater user \
     mkdir /local && \
     addgroup -S "updater" && \
-    adduser -S -D "updater" -G "updater" -h /local && \
+    adduser -S -D "updater" -G "updater" -u 998 -h /local && \
     chmod -R 700 /local && \
     echo 'permit nopass :updater as root' > /etc/doas.d/doas.conf && \
     ls -la /usr/src/app/ && \
@@ -44,7 +44,9 @@ RUN \
 
 USER updater
 
-RUN mkdir -p /local/dotnet
+RUN \
+    mkdir -p /local/dotnet && \
+    mkdir -p /local/downloads
 
 ENTRYPOINT [ "/usr/src/app/populate" ]
 
