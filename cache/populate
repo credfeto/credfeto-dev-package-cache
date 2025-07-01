@@ -2,6 +2,7 @@
 
 VERSIONS_TO_INSTALL="8.0 9.0 10.0"
 
+BASEDIR="$(dirname "$(readlink -f "$0")")"
 
 die() {
     echo
@@ -36,7 +37,7 @@ export MSBUILDTERMINALLOGGER="auto"
 [ -f "/bin/bash" ] || die "bash not found"
 [ -f "/bin/tar" ] || die "tar not found"
 
-. ./install-dotnet
+. "$BASEDIR/install-dotnet"
 
 TOOLS="sleet \
        TSQLLint \
