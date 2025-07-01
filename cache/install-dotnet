@@ -20,9 +20,9 @@ extract_dotnet_package() {
 
     local temp_out_path="$(mktemp -d "$temporary_file_template")"
 
-    echo "Zip: $zip_path"
-    echo "Out: $out_path"
-    echo "Temp: $temp_out_path"
+    #echo "Zip: $zip_path"
+    #echo "Out: $out_path"
+    #echo "Temp: $temp_out_path"
 
     echo "Extracting..."
     local failed=false
