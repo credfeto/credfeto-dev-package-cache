@@ -37,9 +37,9 @@ extract_dotnet_package() {
 
     echo "Extracting..."
     local failed=false
-    tar -xvzf "$zip_path" -C "$temp_out_path"  || failed=true
+    tar -xvzf "$zip_path" -C "$temp_out_path" > /dev/null || failed=true
 
-    echo "Verson"
+    echo "Install..."
     local folders_with_version_regex='^.*/[0-9]+\.[0-9]+[^/]+/'
     find "$temp_out_path" -type f | grep -Eo "$folders_with_version_regex" | sort | copy_files_or_dirs_from_list "$temp_out_path" "$out_path" false
     find "$temp_out_path" -type f | grep -Ev "$folders_with_version_regex" | copy_files_or_dirs_from_list "$temp_out_path" "$out_path" "$override_non_versioned_files"
@@ -73,7 +73,6 @@ copy_files_or_dirs_from_list() {
     cat | uniq | while read -r file_path; do
         local path="$(remove_beginning_slash "${file_path#$root_path}")"
         local target="$out_path/$path"
-        echo "*** $path >>>> $target"
         if [ "$override" = true ] || (! ([ -d "$target" ] || [ -e "$target" ])); then
             doas mkdir -p "$out_path/$(dirname "$path")"
             if [ -d "$target" ]; then
