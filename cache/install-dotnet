@@ -156,10 +156,10 @@ install_dotnet_version() {
   echo ""
 
   if [ -f "$DOTNET_ROOT/dotnet" ]; then
-    echo "Currently installed:"
-    "$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " "
-    echo "Check $SDK_VERSION installed:"
-    "$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F "$SDK_VERSION"
+#    echo "Currently installed:"
+#    "$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " "
+#    echo "Check $SDK_VERSION installed:"
+#    "$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F "$SDK_VERSION"
     SDK_INSTALLED=$("$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F "$SDK_VERSION")
     echo "Check Installed: $SDK_INSTALLED"
 
