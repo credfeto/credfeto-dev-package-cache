@@ -51,9 +51,6 @@ TOOLS="sleet \
 
 
 installDotNet() {
-  [ -d "$DOTNET_ROOT" ] && doas rm -fr "$DOTNET_ROOT"
-  mkdir -p "$DOTNET_ROOT"
-
   for VERSION in $VERSIONS_TO_INSTALL; do
 
     SDK_VERSION_URL="$DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version"
