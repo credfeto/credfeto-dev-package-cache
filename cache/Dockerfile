@@ -4,6 +4,7 @@ FROM alpine:latest
 WORKDIR /usr/src/app
 
 COPY populate .
+COPY install-dotnet .
 COPY healthcheck .
 copy nuget.config .
 
