@@ -156,6 +156,7 @@ install_dotnet_version() {
   echo ""
 
   if [ -f "$DOTNET_ROOT/dotnet" ]; then
+    "$DOTNET_ROOT/dotnet" --list-sdks
     SDK_INSTALLED=$("$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F "$SDK_VERSION")
     echo "Installed: $SDK_INSTALLED"
 
