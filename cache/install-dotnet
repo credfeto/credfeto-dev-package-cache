@@ -1,7 +1,10 @@
 #! /bin/bash
 
+DOWNLOADS=$HOME/downloads
 TMPBASE=${TMPDIR:-$HOME/tmp}
 [ -d "$TMPBASE" ] || mkdir -p "$TMPBASE"
+[ -d "$DOWNLOADS" ] || mkdir -p "$DOWNLOADS"
+
 temporary_file_template="$TMPBASE/dotnet.XXXXXXXXX"
 override_non_versioned_files=true
 verbose=0
@@ -154,7 +157,7 @@ install_dotnet_version() {
   echo "**********************************************************************************************"
   echo ""
 
-  TEMPORARY_FILE="$TMPBASE/$SDK_VERSION.tgz"
+  TEMPORARY_FILE="$DOWNLOADS/$SDK_VERSION.tgz"
 
   if [ -f "$TEMPORARY_FILE" ]; then
     echo "Already downloaded $TEMPORARY_FILE"

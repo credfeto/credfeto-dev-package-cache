@@ -175,6 +175,7 @@ services:
         condition: service_healthy
     volumes:
       - ./certs:/local/certs:r
+      - cache_downloads:/local/downloads
     labels:
       - "autoheal=devpkg"
     networks:
@@ -188,6 +189,9 @@ networks:
     driver: bridge
 
 volumes:
+  cache_checker:
+    name: cache_downloads
+    external: true
   cache_proxy:
     name: cache_proxy
     external: true
