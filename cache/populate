@@ -28,11 +28,11 @@ extract_dotnet_package() {
     local zip_path="$1"
     local out_path="$2"
 
-    echo "Zip: $zip_path"
-    echo "Out : $out_path"
 
     local temp_out_path="$(mktemp -d "$temporary_file_template")"
 
+    echo "Zip: $zip_path"
+    echo "Out: $out_path"
     echo "Temp: $temp_out_path"
 
     echo "Extracting..."
