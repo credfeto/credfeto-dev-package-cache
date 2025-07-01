@@ -37,7 +37,7 @@ extract_dotnet_package() {
 
     echo "Extracting..."
     local failed=false
-    doas tar -xvzf "$zip_path" -C "$temp_out_path"  || failed=true
+    tar -xvzf "$zip_path" -C "$temp_out_path"  || failed=true
 
     echo "Verson"
     local folders_with_version_regex='^.*/[0-9]+\.[0-9]+[^/]+/'
@@ -164,7 +164,7 @@ cd "$HOME" || die "Could not switch to $HOME"
 pwd
 
 # Dotnet settings
-export DOTNET_ROOT="/usr/share/dotnet"
+export DOTNET_ROOT="$HOME/dotnet"
 export DOTNET_INSTALL_DIR="$DOTNET_ROOT"
 export DOTNET_MULTILEVEL_LOOKUP="false"
 export DOTNET_NOLOGO="true"
@@ -191,12 +191,13 @@ TOOLS="sleet \
 
 
 installDotNet() {
-  [ -d "/usr/share/dotnet" ] && doas rm -fr /usr/share/dotnet
-  doas mkdir -p /usr/share/dotnet
-  doas chmod 777 /usr/share/dotnet
+  [ -d "$DOTNET_ROOT" ] && doas rm -fr "$DOTNET_ROOT"
+  mkdir -p "$DOTNET_ROOT"
 
   for VERSION in $VERSIONS_TO_INSTALL; do
-
+    
+     SDK_VERSION_URL="$DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version"
+     echo "Checking latest sdk version from $SDK_VERSION_URL"
      SDK_VERSION=$(curl --connect-timeout 5 \
                             --max-time 10 \
                             --retry 5 \
@@ -204,7 +205,7 @@ installDotNet() {
                             --retry-max-time 40 \
                             -L \
                             -f \
-                            "$DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version" || die "Could not read SDK Version from $DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version")
+                            "$SDK_VERSION_URL" || die "Could not read SDK Version from $SDK_VERSION_URL")
 
 
      TEMPORARY_FILE="$(mktemp "$temporary_file_template")"
@@ -215,7 +216,8 @@ installDotNet() {
      echo "*       Current SDK: $SDK_VERSION"
      echo "**********************************************************************************************"
      echo ""
-     echo "Download $PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz"
+     DOWNLOAD_URL=$PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz
+     echo "Download $DOWNLOAD_URL"
      echo " to $TEMPORARY_FILE"
      curl --max-time 10 \
           --retry 5 \
@@ -224,13 +226,13 @@ installDotNet() {
           -s \
           -L \
           -f \
-          "$PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-x64.tar.gz" \
-          -o "$TEMPORARY_FILE" || die "Could not download: $PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz"
+          "$DOWNLOAD_URL" \
+          -o "$TEMPORARY_FILE" || die "Could not download: $DOWNLOAD_URL"
 
-     [ -f "$TEMPORARY_FILE" ] || die "Temp file not downloaded"
-     extract_dotnet_package "$TEMPORARY_FILE" "/usr/share/dotnet" || die "Could not install"
+     [ -f "$TEMPORARY_FILE" ] || die "Temp file not downloaded ($DOWNLOAD_URL)"
+     extract_dotnet_package "$TEMPORARY_FILE" "$DOTNET_ROOT" || die "Could not install"
 
-     /usr/share/dotnet/dotnet --list-sdks
+     "$DOTNET_ROOT/dotnet" --list-sdks || die "Dotnet $SDK_VERSION not installed properly"
 
      echo ""
    done
