@@ -68,21 +68,7 @@ installDotNet() {
                             -f \
                             "$SDK_VERSION_URL" || die "Could not read SDK Version from $SDK_VERSION_URL")
 
-
-    if [ -f "$DOTNET_ROOT/dotnet" ]; then
-      SDK_INSTALLED=$("$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F $SDK_VERSION)
-      echo "Installed: $SDK_INSTALLED"
-
-      if [ "$SDK_INSTALLED" = "$SDK_VERSION" ]; then
-        echo "Already installed - skipping"
-      else
-        echo "New Install (Previous installed): $SDK_VERSION"
-        install_dotnet_version "$VERSION" "$SDK_VERSION"
-      fi
-    else
-      echo "New Install (None installed): $SDK_VERSION"
-      install_dotnet_version "$VERSION" "$SDK_VERSION"
-    fi
+    install_dotnet_version "$VERSION" "$SDK_VERSION"
 
    done
   echo ""

@@ -157,6 +157,20 @@ install_dotnet_version() {
   echo "**********************************************************************************************"
   echo ""
 
+  if [ -f "$DOTNET_ROOT/dotnet" ]; then
+    SDK_INSTALLED=$("$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F "$SDK_VERSION")
+    echo "Installed: $SDK_INSTALLED"
+
+    if [ "$SDK_INSTALLED" = "$SDK_VERSION" ]; then
+      echo "Already installed - skipping"
+      return
+    else
+      echo "New Install (Previous installed): $SDK_VERSION"
+    fi
+  else
+    echo "New Install (None installed): $SDK_VERSION"
+  fi
+
   TEMPORARY_FILE="$DOWNLOADS/$SDK_VERSION.tgz"
 
   if [ -f "$TEMPORARY_FILE" ]; then
@@ -176,7 +190,8 @@ install_dotnet_version() {
 
     [ -f "$TEMPORARY_FILE" ] || say_err "Temp file not downloaded ($DOWNLOAD_URL)"
    fi
+
    extract_dotnet_package "$TEMPORARY_FILE" "$DOTNET_ROOT" || say_err "Could not install"
 
-   "$DOTNET_ROOT/dotnet" --list-sdks || die "Dotnet $SDK_VERSION not installed properly"
+   "$DOTNET_ROOT/dotnet" --list-sdks || say_err "Dotnet $SDK_VERSION not installed properly"
 }
