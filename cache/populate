@@ -18,7 +18,7 @@ cd "$HOME" || die "Could not switch to $HOME"
 pwd
 
 # Dotnet settings
-export DOTNET_ROOT="$HOME/dotnet"
+export DOTNET_ROOT="/usr/share/dotnet"
 export DOTNET_INSTALL_DIR="$DOTNET_ROOT"
 export DOTNET_MULTILEVEL_LOOKUP="false"
 export DOTNET_NOLOGO="true"
