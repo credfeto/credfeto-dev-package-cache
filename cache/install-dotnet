@@ -34,7 +34,7 @@ extract_dotnet_package() {
     find "$temp_out_path" -type f | grep -Ev "$folders_with_version_regex" | copy_files_or_dirs_from_list "$temp_out_path" "$out_path" "$override_non_versioned_files"
 
     doas rm -rf "$temp_out_path"
-    doas rm -f "$zip_path" && say_verbose "Temporary archive file $zip_path was removed"
+    #doas rm -f "$zip_path" && say_verbose "Temporary archive file $zip_path was removed"
 
     [ -f "$out_path/dotnet" ] || echo "Missing dotnet"
     [ -f "$out_path/dotnet" ] || failed=true
@@ -154,22 +154,25 @@ install_dotnet_version() {
   echo "**********************************************************************************************"
   echo ""
 
-  TEMPORARY_FILE="$(mktemp "$temporary_file_template")"
+  TEMPORARY_FILE="$TMPBASE/$SDK_VERSION.tgz"
 
-  DOWNLOAD_URL=$PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz
-  echo "Download $DOWNLOAD_URL"
-  echo " to $TEMPORARY_FILE"
-  curl --max-time 10 \
-        --retry 5 \
-        --retry-delay 1 \
-        --retry-max-time 40 \
-        -s \
-        -L \
-        -f \
-        "$DOWNLOAD_URL" \
-        -o "$TEMPORARY_FILE" || say_err "Could not download: $DOWNLOAD_URL"
+  if [ -f "$TEMPORARY_FILE" ]; then
+    echo "Already downloaded $TEMPORARY_FILE"
+  else
+    DOWNLOAD_URL=$PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz
+    echo "Download $DOWNLOAD_URL to $TEMPORARY_FILE..."
+    curl --max-time 10 \
+          --retry 5 \
+          --retry-delay 1 \
+          --retry-max-time 40 \
+          -s \
+          -L \
+          -f \
+          "$DOWNLOAD_URL" \
+          -o "$TEMPORARY_FILE" || say_err "Could not download: $DOWNLOAD_URL"
 
-   [ -f "$TEMPORARY_FILE" ] || say_err "Temp file not downloaded ($DOWNLOAD_URL)"
+    [ -f "$TEMPORARY_FILE" ] || say_err "Temp file not downloaded ($DOWNLOAD_URL)"
+   fi
    extract_dotnet_package "$TEMPORARY_FILE" "$DOTNET_ROOT" || say_err "Could not install"
 
    "$DOTNET_ROOT/dotnet" --list-sdks || die "Dotnet $SDK_VERSION not installed properly"
