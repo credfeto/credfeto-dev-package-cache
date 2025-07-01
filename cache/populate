@@ -58,6 +58,7 @@ installDotNet() {
 
     SDK_VERSION_URL="$DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version"
     echo "Checking latest sdk version from $SDK_VERSION_URL"
+    echo ""
     SDK_VERSION=$(curl --connect-timeout 5 \
                             --max-time 10 \
                             --retry 5 \

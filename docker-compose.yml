@@ -189,7 +189,7 @@ networks:
     driver: bridge
 
 volumes:
-  cache_checker:
+  cache_downloads:
     name: cache_downloads
     external: true
   cache_proxy:
