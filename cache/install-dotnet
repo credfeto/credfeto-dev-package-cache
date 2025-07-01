@@ -161,7 +161,7 @@ install_dotnet_version() {
 #    echo "Check $SDK_VERSION installed:"
 #    "$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F "$SDK_VERSION"
     SDK_INSTALLED=$("$DOTNET_ROOT/dotnet" --list-sdks | cut -f 1 -d " " | grep -F "$SDK_VERSION")
-    echo "Check Installed: $SDK_INSTALLED"
+    #echo "Check Installed: $SDK_INSTALLED"
 
     if [ "$SDK_INSTALLED" = "$SDK_VERSION" ]; then
       echo "Already installed - skipping"
