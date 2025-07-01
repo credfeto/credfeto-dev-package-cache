@@ -24,9 +24,7 @@ RUN apk add --no-cache \
         libstdc++ \
         openssh \
         sed \
-        zlib \
-        dotnet8-sdk \
-        dotnet9-sdk
+        zlib
 
 # Add Updater group
 RUN \
