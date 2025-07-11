@@ -25,11 +25,11 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
-    environment:
-      - Proxy__UpstreamUrl__0=https://api.nuget.org
-      - Proxy__PublicUrl=https://api.nuget.local:5555
-      - Proxy__Packages=/data
-      - Proxy__JsonMaxAgeSeconds=30
+#    environment:
+#      - Proxy__UpstreamUrl__0=https://api.nuget.org
+#      - Proxy__PublicUrl=https://api.nuget.local:5555
+#      - Proxy__Packages=/data
+#      - Proxy__JsonMaxAgeSeconds=30
     ports:
       - 8000:8080
     volumes:
