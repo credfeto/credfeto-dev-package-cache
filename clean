@@ -1,3 +1,3 @@
 #! /bin/sh
 
-sudo rm -fr /cache/nuget/api.nuget.local/json/*/cache/nuget/funfair.nuget.local/json/* /cache/nuget/funfair-prerelease.nuget.local/jsom/*
+sudo rm -frv /cache/nuget/api.nuget.local/json/* /cache/nuget/funfair.nuget.local/json/* /cache/nuget/funfair-prerelease.nuget.local/jsom/*
