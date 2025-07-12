@@ -50,7 +50,7 @@ services:
     environment:
       - Proxy__UpstreamUrls__0=https://api.nuget.org
       - Proxy__PublicUrl=https://api.nuget.local:5555
-      - Proxy__Meadata=/data/json
+      Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
       - Proxy__JsonMaxAgeSeconds=30
     volumes:
@@ -73,7 +73,7 @@ services:
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget
       - Proxy__UpstreamUrls__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget
       - Proxy__PublicUrl=https://funfair.nuget.local:5555
-      - Proxy__Meadata=/data/json
+      Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
       - Proxy__JsonMaxAgeSeconds=600
     ports:
@@ -98,7 +98,7 @@ services:
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget-prerelease
       - Proxy__UpstreamUrls__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget-prerelease
       - Proxy__PublicUrl=https://funfair-prerelease.nuget.local:5555
-      - Proxy__Meadata=/data/json
+      Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
       - Proxy__JsonMaxAgeSeconds=600
     volumes:
