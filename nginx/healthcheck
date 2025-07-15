@@ -10,16 +10,16 @@ fi
 curl --fail http://localhost/health || exit 1
 
 # Check to see if api nuget can be accessed
-curl --fail --insecure https://api.nuget.local:5555/ping?souce=nginx-api.nuget.local- --resolve 'API.NUGET.LOCAL:5555:127.0.0.1' || exit 1
+curl --fail --insecure https://api.nuget.local:5555/ping?source=nginx-api.nuget.local- --resolve 'API.NUGET.LOCAL:5555:127.0.0.1' || exit 1
 
 # Check to see if funfair nuget can be accessed
-curl --fail --insecure https://funfair.nuget.local:5555/ping?souce=nginx-funfair.nuget.local --resolve 'FUNFAIR.NUGET.LOCAL:5555:127.0.0.1' || exit 1
+curl --fail --insecure https://funfair.nuget.local:5555/ping?source=nginx-funfair.nuget.local --resolve 'FUNFAIR.NUGET.LOCAL:5555:127.0.0.1' || exit 1
 
 # Check to see if funfair pre-release nuget can be accessed
-curl --fail --insecure https://funfair-prerelease.nuget.local:5555/ping?souce=nginx-funfair-prerelease.nuget.local --resolve 'FUNFAIR-PRERELEASE.NUGET.LOCAL:5555:127.0.0.1' || exit 1
+curl --fail --insecure https://funfair-prerelease.nuget.local:5555/ping?source=nginx-funfair-prerelease.nuget.local --resolve 'FUNFAIR-PRERELEASE.NUGET.LOCAL:5555:127.0.0.1' || exit 1
 
 # Check to see if dotnet cache can be accessed
-curl --fail --insecure https://builds.dotnet.local:5555/ping?souce=nginx-builds.dotnet.local --resolve 'NGINX-BUILDS.DOTNET.LOCAL:5555:127.0.0.1' || exit 1
+curl --fail --insecure https://builds.dotnet.local:5555/ping?source=nginx-builds.dotnet.local --resolve 'BUILDS.DOTNET.LOCAL:5555:127.0.0.1' || exit 1
 
 # Check to see if npm nuget can be accessed
 curl --fail --insecure https://npm.local:5555/-/ping --resolve 'NPM.LOCAL:5555:127.0.0.1' || exit 1
