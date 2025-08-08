@@ -203,3 +203,23 @@ install_dotnet_version() {
 
    "$DOTNET_ROOT/dotnet" --list-sdks || say_err "Dotnet $SDK_VERSION not installed properly"
 }
+
+get_latest_dotnet_sdk_version() {
+    DOTNET_CHANNEL_VERSION=$1
+    [ -z "$DOTNET_CHANNEL_VERSION" ] && die "Dotnet channel version not defined"
+    curl --connect-timeout 5 \
+         --max-time 10 \
+         --retry 5 \
+         --retry-delay 1 \
+         --retry-max-time 40 \
+         -s \
+         -L \
+         -f \
+         --user-agent "$USER_AGENT" \
+         https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json |
+    jq --arg v "$DOTNET_CHANNEL_VERSION" -r '
+            ."releases-index"
+            | map(select(."channel-version" | contains($v)))
+            | first(.[])
+          | ."latest-sdk"'
+}

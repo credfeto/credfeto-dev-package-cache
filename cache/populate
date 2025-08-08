@@ -53,18 +53,15 @@ TOOLS="sleet \
 installDotNet() {
   for VERSION in $VERSIONS_TO_INSTALL; do
 
-    SDK_VERSION_URL="$DOTNET_SOURCE/dotnet/Sdk/$VERSION/latest.version"
-    echo "Checking latest sdk version from $SDK_VERSION_URL"
+    SDK_VERSION=$(get_latest_dotnet_sdk_version "$VERSION")
+
+    [ -z "$SDK_VERSION" ] && die "Could not determine latest SDK version for $VERSION"
+
+    echo "**********************************************************************************************"
+    echo "* Installing dotnet: $VERSION"
+    echo "*       Current SDK: $SDK_VERSION"
+    echo "**********************************************************************************************"
     echo ""
-    SDK_VERSION=$(curl --connect-timeout 5 \
-                            --max-time 10 \
-                            --retry 5 \
-                            --retry-delay 1 \
-                            --retry-max-time 40 \
-                            -s \
-                            -L \
-                            -f \
-                            "$SDK_VERSION_URL" || die "Could not read SDK Version from $SDK_VERSION_URL")
 
     install_dotnet_version "$VERSION" "$SDK_VERSION"
 
