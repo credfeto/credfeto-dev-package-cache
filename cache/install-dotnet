@@ -12,6 +12,8 @@ verbose=0
 export DOTNET_SOURCE=https://builds.dotnet.microsoft.com
 export PROXY_HOST=https://builds.dotnet.local:5555
 
+USER_AGENT="DotnetVersionChecker/1.0.0"
+
 # args:
 # zip_path - $1
 # out_path - $2
@@ -186,13 +188,15 @@ install_dotnet_version() {
   else
     DOWNLOAD_URL=$PROXY_HOST/dotnet/Sdk/$SDK_VERSION/dotnet-sdk-$SDK_VERSION-linux-musl-x64.tar.gz
     echo "Download $DOWNLOAD_URL to $TEMPORARY_FILE..."
-    curl --max-time 10 \
+    curl \
+          --max-time 120 \
           --retry 5 \
-          --retry-delay 1 \
-          --retry-max-time 40 \
+          --retry-delay 0 \
+          --retry-max-time 600 \
           -s \
           -L \
           -f \
+          --user-agent "$USER_AGENT" \
           "$DOWNLOAD_URL" \
           -o "$TEMPORARY_FILE" || say_err "Could not download: $DOWNLOAD_URL"
 
@@ -207,16 +211,16 @@ install_dotnet_version() {
 get_latest_dotnet_sdk_version() {
     DOTNET_CHANNEL_VERSION=$1
     [ -z "$DOTNET_CHANNEL_VERSION" ] && die "Dotnet channel version not defined"
-    curl --connect-timeout 5 \
-         --max-time 10 \
-         --retry 5 \
-         --retry-delay 1 \
-         --retry-max-time 40 \
-         -s \
-         -L \
-         -f \
-         --user-agent "$USER_AGENT" \
-         https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json |
+    curl \
+       --max-time 120 \
+       --retry 5 \
+       --retry-delay 0 \
+       --retry-max-time 600 \
+       -s \
+       -L \
+       -f \
+       --user-agent "$USER_AGENT" \
+       https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json |
     jq --arg v "$DOTNET_CHANNEL_VERSION" -r '
             ."releases-index"
             | map(select(."channel-version" | contains($v)))
