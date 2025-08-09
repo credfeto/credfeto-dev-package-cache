@@ -16,6 +16,7 @@ die() {
 [ -d /cache/npm/storage ] || sudo mkdir /cache/npm/storage
 [ -d /cache/proxy ] || sudo mkdir /cache/proxy
 [ -d /cache/downloads ] || sudo mkdir /cache/downloads
+[ -d /cache/dotnet ] || sudo mkdir /cache/dotnet
 
 git pull
 
@@ -23,6 +24,7 @@ sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
 sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"
 sudo chown -R 998:998 /cache/downloads || die "Could not set cache permissions"
+sudo chown -R 998:998 /cache/dotnet || die "Could not set cache permissions"
 
 export COMPOSE_BAKE=true
 
