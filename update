@@ -35,6 +35,12 @@ sudo docker volume create \
 sudo docker volume create \
   --opt type=none \
   --opt o=bind \
+  --opt device=/cache/dotnet \
+  cache_dotnet
+
+sudo docker volume create \
+  --opt type=none \
+  --opt o=bind \
   --opt device=/cache/proxy \
   cache_proxy
 

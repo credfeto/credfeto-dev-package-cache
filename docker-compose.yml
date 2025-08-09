@@ -179,6 +179,7 @@ services:
     volumes:
       - ./certs:/local/certs:r
       - cache_downloads:/local/downloads
+      - cache_dotnet:/local/dotnet
     labels:
       - "autoheal=devpkg"
     networks:
@@ -194,6 +195,9 @@ networks:
 volumes:
   cache_downloads:
     name: cache_downloads
+    external: true
+  cache_dotnet:
+    name: cache_dotnet
     external: true
   cache_proxy:
     name: cache_proxy
