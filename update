@@ -6,6 +6,7 @@ die() {
     exit 1
 }
 
+BASEDIR="$(dirname "$(readlink -f "$0")")"
 
 [ -d /cache/nginx ] || sudo mkdir /cache/nginx
 [ -d /cache/npm ] || sudo mkdir /cache/npm
@@ -27,6 +28,11 @@ sudo chown -R 998:998 /cache/downloads || die "Could not set cache permissions"
 sudo chown -R 998:998 /cache/dotnet || die "Could not set cache permissions"
 
 export COMPOSE_BAKE=true
+
+if [ -f "$BASEDIR/certs/dh4096.pem" ]; then
+  echo "Generating PFS"
+  openssl dhparam -out "$BASEDIR/certs/dh.pem" 4096
+fi
 
 sudo docker volume create \
   --opt type=none \
