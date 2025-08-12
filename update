@@ -29,7 +29,7 @@ sudo chown -R 998:998 /cache/dotnet || die "Could not set cache permissions"
 
 export COMPOSE_BAKE=true
 
-if [ ! -f "$BASEDIR/certs/dh4096.pem" ]; then
+if [ ! -f "$BASEDIR/certs/dh.pem" ]; then
   echo "Generating PFS"
   openssl dhparam -out "$BASEDIR/certs/dh.pem" 4096
 fi
