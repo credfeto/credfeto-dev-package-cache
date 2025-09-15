@@ -1,13 +1,14 @@
 #! /bin/sh
 
+RESTARTER_TAG=devpkg
 
 while true; do 
   echo "Sleeping..."
   sleep 60; 
 
   echo "Find Unhealthy"
-  docker ps -q -f health=unhealthy -f name=devpkg
+  docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG"
 
   echo "Restarting unhealthy"
-  docker ps -q -f health=unhealthy -f name=devpkg | xargs --no-run-if-empty docker restart;
+  docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG" | xargs --no-run-if-empty docker restart;
 done
