@@ -169,23 +169,23 @@ services:
           - npm.local
           - builds.dotnet.local
 
-  devpkg-cache:
-    image: docker-registry.markridgwell.com/credfeto/cache-checker:latest
-    container_name: devpkg-cache
-    restart: always
-    stop_grace_period: 5s
-    stop_signal: SIGINT
-    depends_on:
-      devpkg-nginx:
-        condition: service_healthy
-    volumes:
-      - ./certs:/local/certs:r
-      - cache_downloads:/local/downloads
-      - cache_dotnet:/local/dotnet
-    labels:
-      - "autoheal=devpkg"
-    networks:
-      frontend:
+#  devpkg-cache:
+#    image: docker-registry.markridgwell.com/credfeto/cache-checker:latest
+#    container_name: devpkg-cache
+#    restart: always
+#    stop_grace_period: 5s
+#    stop_signal: SIGINT
+#    depends_on:
+#      devpkg-nginx:
+#        condition: service_healthy
+#    volumes:
+#      - ./certs:/local/certs:r
+#      - cache_downloads:/local/downloads
+#      - cache_dotnet:/local/dotnet
+#    labels:
+#      - "autoheal=devpkg"
+#    networks:
+#      frontend:
 
 networks:
   backend:
