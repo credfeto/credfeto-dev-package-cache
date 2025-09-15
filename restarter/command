@@ -1,6 +1,6 @@
 #! /bin/sh
 
-RESTARTER_TAG=devpkg
+[ -z "$RESTARTER_TAG" ] && RESTARTER_TAG=devpkg
 
 while true; do 
   echo "Sleeping..."
