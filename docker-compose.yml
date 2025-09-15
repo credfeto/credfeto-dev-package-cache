@@ -6,7 +6,7 @@ services:
   devpkg-restarter:
     image: docker-registry.markridgwell.com/credfeto/cache-restarter:latest
     container_name: devpkg-restarter
-    hostname: restarter
+    hostname: devpkg-restarter
     restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
