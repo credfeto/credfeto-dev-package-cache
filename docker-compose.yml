@@ -12,7 +12,7 @@ services:
     stop_signal: SIGINT
     network_mode: none
     environment:
-      - RESTARTER_TAG:devpkg
+      - RESTARTER_TAG=devpkg
     cap_drop:
       - ALL
     volumes:
