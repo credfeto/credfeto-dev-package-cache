@@ -1,5 +1,7 @@
 #! /bin/sh
 
+echo "Tag: $RESTARTER_TAG"
+
 [ -z "$RESTARTER_TAG" ] && RESTARTER_TAG=devpkg
 
 while true; do 
