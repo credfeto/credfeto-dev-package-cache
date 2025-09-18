@@ -5,3 +5,5 @@ WORKDIR /usr/src/app
 COPY command .
 
 ENTRYPOINT ["/usr/src/app/command"]
+
+ENV RESTARTER_TAG "devpkg"
