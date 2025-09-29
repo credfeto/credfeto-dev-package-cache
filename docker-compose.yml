@@ -71,6 +71,7 @@ services:
     volumes:
       - cache_proxy:/data
       - ./certs/builds.dotnet.local.pfx:/usr/src/app/server.pfx:r
+      - ./cache.appsettings.json:/usr/src/app/appsettings-local.json:ro
     labels:
       - "autoheal=devpkg"
     networks:
