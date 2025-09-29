@@ -67,7 +67,7 @@ services:
 #      - Proxy__Packages=/data
 #      - Proxy__JsonMaxAgeSeconds=30
     ports:
-      - "8085:8080/tcp"
+      - "8085:8081/tcp"
     volumes:
       - cache_proxy:/data
       - ./certs/builds.dotnet.local.pfx:/usr/src/app/server.pfx:r
