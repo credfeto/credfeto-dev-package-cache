@@ -31,8 +31,6 @@ if [ ! -f "$BASEDIR/.env" ]; then
   } > "$BASEDIR/.env"
 fi
 
-git pull
-
 sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
 sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"
