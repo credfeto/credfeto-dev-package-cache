@@ -8,6 +8,9 @@ die() {
 
 BASEDIR="$(dirname "$(readlink -f "$0")")"
 
+git pull
+
+[ -d /cache/ ] || sudo mkdir /cache
 [ -d /cache/nginx ] || sudo mkdir /cache/nginx
 [ -d /cache/npm ] || sudo mkdir /cache/npm
 [ -d /cache/nuget ] || sudo mkdir /cache/nuget
@@ -18,8 +21,6 @@ BASEDIR="$(dirname "$(readlink -f "$0")")"
 [ -d /cache/proxy ] || sudo mkdir /cache/proxy
 [ -d /cache/downloads ] || sudo mkdir /cache/downloads
 [ -d /cache/dotnet ] || sudo mkdir /cache/dotnet
-
-git pull
 
 sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
