@@ -91,8 +91,8 @@ services:
       - Proxy__Packages=/data/packages
       - Proxy__JsonMaxAgeSeconds=30
     ports:
-      - "8081:8080/tcp"
-      - "8081:8080/udp"
+      - "8081:8081/tcp"
+      - "8081:8081/udp"
     volumes:
       - cache_api_nuget_org:/data
       - ./certs/api.nuget.local.pfx:/usr/src/app/server.pfx:r
