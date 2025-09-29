@@ -163,6 +163,8 @@ services:
     environment:
       - VERDACCIO_PORT=4873
       - VERDACCIO_PUBLIC_URL=${NPM_URL}
+    ports:
+      - "8084:4873/tcp"
     volumes:
       - ./npm/conf:/verdaccio/conf
       - cache_npm_storage:/verdaccio/storage
