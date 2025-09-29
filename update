@@ -22,6 +22,17 @@ git pull
 [ -d /cache/downloads ] || sudo mkdir /cache/downloads
 [ -d /cache/dotnet ] || sudo mkdir /cache/dotnet
 
+if [ ! -f "$BASEDIR/.env" ]; then
+  {
+    echo "API_NUGET_URL=https://api.nuget.local:5555"
+    echo "FUNFAIR_NUGET_URL=https://funfair.nuget.local:5555"
+    echo "FUNFAIR_PRERELEASE_NUGET=https://funfair-prerelease.nuget.local:5555"
+    echo "NPM_URL=https://npm.local:5555"
+  } > "$BASEDIR/.env"
+fi
+
+git pull
+
 sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
 sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"

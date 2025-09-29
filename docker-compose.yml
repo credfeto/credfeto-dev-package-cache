@@ -67,7 +67,7 @@ services:
 #      - Proxy__Packages=/data
 #      - Proxy__JsonMaxAgeSeconds=30
     ports:
-      - 8000:8080
+      - "8080:8080/tcp"
     volumes:
       - cache_proxy:/data
       - ./certs/builds.dotnet.local.pfx:/usr/src/app/server.pfx:r
@@ -86,10 +86,13 @@ services:
     stop_signal: SIGINT
     environment:
       - Proxy__UpstreamUrls__0=https://api.nuget.org
-      - Proxy__PublicUrl=https://api.nuget.local:5555
+      - Proxy__PublicUrl=${API_NUGET_URL}
       - Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
       - Proxy__JsonMaxAgeSeconds=30
+    ports:
+      - "8081:8080/tcp"
+      - "8081:8080/udp"
     volumes:
       - cache_api_nuget_org:/data
       - ./certs/api.nuget.local.pfx:/usr/src/app/server.pfx:r
@@ -109,12 +112,13 @@ services:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget
       - Proxy__UpstreamUrls__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget
-      - Proxy__PublicUrl=https://funfair.nuget.local:5555
+      - Proxy__PublicUrl=${FUNFAIR_NUGET_URL}
       - Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
       - Proxy__JsonMaxAgeSeconds=600
     ports:
-      - 8001:8080
+      - "8082:8081/tcp"
+      - "8082:8081/tcp"
     volumes:
       - cache_funfair_release:/data
       - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
@@ -134,10 +138,13 @@ services:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget-prerelease
       - Proxy__UpstreamUrls__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget-prerelease
-      - Proxy__PublicUrl=https://funfair-prerelease.nuget.local:5555
+      - Proxy__PublicUrl=${FUNFAIR_PRERELEASE_NUGET_URL}
       - Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
       - Proxy__JsonMaxAgeSeconds=600
+    ports:
+      - "8083:8081/tcp"
+      - "8083:8081/tcp"
     volumes:
       - cache_funfair_prerelease:/data
       - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
@@ -155,7 +162,7 @@ services:
     stop_signal: SIGINT
     environment:
       - VERDACCIO_PORT=4873
-      - VERDACCIO_PUBLIC_URL=https://npm.local:5555
+      - VERDACCIO_PUBLIC_URL=${NPM_URL}
     volumes:
       - ./npm/conf:/verdaccio/conf
       - cache_npm_storage:/verdaccio/storage
