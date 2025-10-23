@@ -111,7 +111,6 @@ services:
     environment:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget
-      - Proxy__UpstreamUrls__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget
       - Proxy__PublicUrl=${FUNFAIR_NUGET_URL}
       - Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
@@ -137,7 +136,6 @@ services:
     environment:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget-prerelease
-      - Proxy__UpstreamUrls__2=https://s3-eu-west-1.amazonaws.com/dotnet-nuget-prerelease
       - Proxy__PublicUrl=${FUNFAIR_PRERELEASE_NUGET_URL}
       - Proxy__Metadata=/data/json
       - Proxy__Packages=/data/packages
