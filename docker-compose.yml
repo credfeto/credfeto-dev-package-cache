@@ -3,7 +3,7 @@
 
 services:
   devpkg-watchtower:
-    image: containrrr/watchtower
+    image: nickfedor/watchtower:latest
     container_name: devpkg-watchtower
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
