@@ -8,6 +8,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    profiles:
+      - minimal
+      - full
     environment:
       WATCHTOWER_NOTIFICATIONS_HOSTNAME: dev-cache
       WATCHTOWER_POLL_INTERVAL: 3600
@@ -19,6 +22,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8080:8080/tcp"
+    profiles:
+      - monitor
+      - full
     environment:
       DOZZLE_HOSTNAME: dev-cache
       # Uncomment to enable container actions (stop, start, restart). See https://dozzle.dev/guide/actions
@@ -45,6 +51,9 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     network_mode: none
+    profiles:
+      - minimal
+      - full
     environment:
       - RESTARTER_TAG=devpkg
     cap_drop:
@@ -61,6 +70,8 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    profiles:
+      - full
 #    environment:
 #      - Proxy__UpstreamUrls__0=https://api.nuget.org
 #      - Proxy__PublicUrl=https://api.nuget.local:5555
@@ -84,6 +95,9 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    profiles:
+      - minimal
+      - full
     environment:
       - Proxy__UpstreamUrls__0=https://api.nuget.org
       - Proxy__PublicUrl=${API_NUGET_URL}
@@ -108,6 +122,9 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    profiles:
+      - minimal
+      - full
     environment:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget
@@ -133,6 +150,9 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    profiles:
+      - minimal
+      - full
     environment:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget-prerelease
@@ -158,6 +178,9 @@ services:
     restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
+    profiles:
+      - minimal
+      - full
     environment:
       - VERDACCIO_PORT=4873
       - VERDACCIO_PUBLIC_URL=${NPM_URL}
@@ -183,6 +206,9 @@ services:
     restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
+    profiles:
+      - proxy
+      - full
     volumes:
       - ./certs:/etc/nginx/ssl:r
       - cache_nginx:/var/cache/nginx/proxy
@@ -210,24 +236,6 @@ services:
           - funfair-prerelease.nuget.local
           - npm.local
           - builds.dotnet.local
-
-#  devpkg-cache:
-#    image: docker-registry.markridgwell.com/credfeto/cache-checker:latest
-#    container_name: devpkg-cache
-#    restart: always
-#    stop_grace_period: 5s
-#    stop_signal: SIGINT
-#    depends_on:
-#      devpkg-nginx:
-#        condition: service_healthy
-#    volumes:
-#      - ./certs:/local/certs:r
-#      - cache_downloads:/local/downloads
-#      - cache_dotnet:/local/dotnet
-#    labels:
-#      - "autoheal=devpkg"
-#    networks:
-#      frontend:
 
 networks:
   backend:
