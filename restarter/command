@@ -6,11 +6,11 @@ echo "Tag: $RESTARTER_TAG"
 
 while true; do 
   echo "$RESTARTER_TAG: Sleeping..."
-  sleep 60; 
+  sleep 60;
 
-  echo "$RESTARTER_TAG: Find Unhealthy"
-  docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG"
-
+#  echo "$RESTARTER_TAG: Find Unhealthy"
+#  docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG"
+#
   echo "$RESTARTER_TAG Restarting unhealthy"
   docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG" | xargs --no-run-if-empty docker restart;
 done
