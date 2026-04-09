@@ -121,7 +121,7 @@ services:
       - Proxy__JsonMaxAgeSeconds=600
     ports:
       - "8082:8081/tcp"
-      - "8082:8081/tcp"
+      - "8082:8081/udp"
     volumes:
       - cache_funfair_release:/data
       - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
@@ -148,7 +148,7 @@ services:
       - Proxy__JsonMaxAgeSeconds=600
     ports:
       - "8083:8081/tcp"
-      - "8083:8081/tcp"
+      - "8083:8081/udp"
     volumes:
       - cache_funfair_prerelease:/data
       - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
