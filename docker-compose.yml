@@ -76,6 +76,8 @@ services:
       - "autoheal=devpkg"
     networks:
       backend:
+        aliases:
+          - devpkg-dotnet-build.local
 
   devpkg-nuget:
     image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
@@ -100,6 +102,8 @@ services:
       - "autoheal=devpkg"
     networks:
       backend:
+        aliases:
+          - devpkg-nuget.local
 
   devpkg-funfair-release:
     image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
@@ -125,6 +129,8 @@ services:
       - "autoheal=devpkg"
     networks:
       backend:
+        aliases:
+          - devpkg-funfair-release.local
 
   devpkg-funfair-prerelease:
     image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
@@ -150,11 +156,13 @@ services:
       - "autoheal=devpkg"
     networks:
       backend:
+        aliases:
+          - devpkg-funfair-prerelease.local
 
   devpkg-npm:
     image: verdaccio/verdaccio:latest
     container_name: devpkg-npm
-    hostname: devpkg-npm
+    hostname: npm
     restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
@@ -176,6 +184,8 @@ services:
       - "autoheal=devpkg"
     networks:
       backend:
+        aliases:
+          - devpkg-npm.local
 
   devpkg-nginx:
     image: docker-registry.markridgwell.com/credfeto/cache-nginx:latest
