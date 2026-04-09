@@ -154,7 +154,7 @@ services:
   devpkg-npm:
     image: verdaccio/verdaccio:latest
     container_name: devpkg-npm
-    hostname: npm
+    hostname: devpkg-npm
     restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
