@@ -1,3 +1,4 @@
+---
 storage: /verdaccio/storage
 web:
   enable: false
@@ -21,4 +22,4 @@ packages:
     access: $anonymous
     publish: $anonymous
     proxy: npmjs
-log: { type: stdout, format: pretty, level: info }
+log: {type: stdout, format: pretty, level: info}

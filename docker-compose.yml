@@ -1,5 +1,5 @@
 # Version is now obsolete
-#version: "3.8"
+# version: "3.8"
 
 services:
   devpkg-watchtower:
@@ -21,13 +21,16 @@ services:
       - "8080:8080/tcp"
     environment:
       DOZZLE_HOSTNAME: dev-cache
-      # Uncomment to enable container actions (stop, start, restart). See https://dozzle.dev/guide/actions
+      # Uncomment to enable container actions (stop, start, restart).
+      # See https://dozzle.dev/guide/actions
       # - DOZZLE_ENABLE_ACTIONS=true
       #
-      # Uncomment to allow access to container shells. See https://dozzle.dev/guide/shell
+      # Uncomment to allow access to container shells.
+      # See https://dozzle.dev/guide/shell
       # - DOZZLE_ENABLE_SHELL=true
       #
-      # Uncomment to enable authentication. See https://dozzle.dev/guide/authentication
+      # Uncomment to enable authentication.
+      # See https://dozzle.dev/guide/authentication
       # - DOZZLE_AUTH_PROVIDER=simple
     restart: always
     healthcheck:
@@ -175,7 +178,9 @@ services:
       - ./npm/conf:/verdaccio/conf
       - cache_npm_storage:/verdaccio/storage
     healthcheck:
-      test: wget --no-verbose --tries=1 --spider http://127.0.0.1:4873/-/ping -O /dev/null || exit 1
+      test: >-
+        wget --no-verbose --tries=1 --spider
+        http://127.0.0.1:4873/-/ping -O /dev/null || exit 1
       interval: 5s
       timeout: 4s
       retries: 5
@@ -274,4 +279,3 @@ volumes:
   cache_nginx:
     name: cache_nginx
     external: true
-
