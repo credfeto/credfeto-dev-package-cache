@@ -8,61 +8,51 @@ die() {
 
 BASEDIR="$(dirname "$(readlink -f "$0")")"
 
+add_ipv4_rule() {
+    range="$1"
+    port="$2"
+    protocol="$3"
+
+    sudo firewall-cmd --permanent --add-rich-rule="rule family=\"ipv4\" source address=\"${range}\" port protocol=\"${protocol}\" port=\"${port}\" accept"
+}
+
+add_private_ipv4_rules() {
+    port="$1"
+    protocol="$2"
+
+    # RFC1918 private IPv4 ranges.
+    for range in 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16; do
+        add_ipv4_rule "$range" "$port" "$protocol"
+    done
+}
+
 ## devpkg-nuget
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="8081" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="8081" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="8081" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="udp" port="8081" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="udp" port="8081" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="udp" port="8081" accept'
+add_private_ipv4_rules 8081 tcp
+add_private_ipv4_rules 8081 udp
 
 
 ## devpkg-funfair-release
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="8082" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="8082" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="8082" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="udp" port="8082" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="udp" port="8082" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="udp" port="8082" accept'
+add_private_ipv4_rules 8082 tcp
+add_private_ipv4_rules 8082 udp
 
 ## devpkg-funfair-prerelease
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="8083" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="8083" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="8083" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="udp" port="8083" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="udp" port="8083" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="udp" port="8083" accept'
+add_private_ipv4_rules 8083 tcp
+add_private_ipv4_rules 8083 udp
 
 ## devpkg-npm
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="8084" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="8084" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="8084" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="udp" port="8084" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="udp" port="8084" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="udp" port="8084" accept'
+add_private_ipv4_rules 8084 tcp
+add_private_ipv4_rules 8084 udp
 
 ## devpkg-proxy
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="8085" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="8085" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="8085" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="udp" port="8085" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="udp" port="8085" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="udp" port="8085" accept'
+add_private_ipv4_rules 8085 tcp
+add_private_ipv4_rules 8085 udp
 
 ## devpkg-nginx
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="5555" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="5555" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="5555" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="udp" port="5555" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="udp" port="5555" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="udp" port="5555" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="5554" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="5554" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="5554" accept'
+add_private_ipv4_rules 5555 tcp
+add_private_ipv4_rules 5555 udp
+add_private_ipv4_rules 5554 tcp
 
 ## devpkg-dozzle
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" port protocol="tcp" port="8080" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" port protocol="tcp" port="8080" accept'
-sudo firewall-cmd --permanent --add-rich-rule='rule family="ipv4" source address="172.16.0.0/20" port protocol="tcp" port="8080" accept'
+add_private_ipv4_rules 8080 tcp
 
 sudo firewall-cmd --reload
