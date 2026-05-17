@@ -37,6 +37,8 @@ sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"
 sudo chown -R 998:998 /cache/downloads || die "Could not set cache permissions"
 sudo chown -R 998:998 /cache/dotnet || die "Could not set cache permissions"
 
+chmod a+r "$BASEDIR/certs/*.pfx"
+
 export COMPOSE_BAKE=true
 
 if [ ! -f "$BASEDIR/certs/dh.pem" ]; then
