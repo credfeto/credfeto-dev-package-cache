@@ -51,8 +51,6 @@ open_port_for_private_networks() {
     for subnet in "${IPV6_PRIVATE_RANGES[@]}"; do
         allow_ipv6 "${subnet}" "${port}" "${protocol}"
     done
-
-    sudo firewall-cmd --reload
 }
 
 ## devpkg-nuget
@@ -83,4 +81,5 @@ open_port_for_private_networks 5554 tcp
 ## devpkg-dozzle
 open_port_for_private_networks 8080 tcp
 
+sudo firewall-cmd --reload || die "Could not reload firewall"
 success "Firewall rules applied"
