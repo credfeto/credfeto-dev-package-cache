@@ -1,58 +1,86 @@
-#! /bin/sh
+#!/bin/bash
 
 die() {
-    echo
-    echo "$@"
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
     exit 1
 }
 
-BASEDIR="$(dirname "$(readlink -f "$0")")"
-
-add_ipv4_rule() {
-    range="$1"
-    port="$2"
-    protocol="$3"
-
-    sudo firewall-cmd --permanent --add-rich-rule="rule family=\"ipv4\" source address=\"${range}\" port protocol=\"${protocol}\" port=\"${port}\" accept"
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
 }
 
-add_private_ipv4_rules() {
-    port="$1"
-    protocol="$2"
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
 
-    # RFC1918 private IPv4 ranges.
-    for range in 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16; do
-        add_ipv4_rule "$range" "$port" "$protocol"
+IPV4_PRIVATE_RANGES=(
+    "10.0.0.0/8"
+    "172.16.0.0/12"
+    "192.168.0.0/16"
+)
+
+IPV6_PRIVATE_RANGES=(
+    "fc00::/7"
+    "fe80::/10"
+)
+
+allow_ipv4() {
+    local subnet="$1"
+    local port="$2"
+    local protocol="$3"
+    sudo firewall-cmd --permanent \
+        --add-rich-rule="rule family='ipv4' source address='${subnet}' port port='${port}' protocol='${protocol}' accept"
+}
+
+allow_ipv6() {
+    local subnet="$1"
+    local port="$2"
+    local protocol="$3"
+    sudo firewall-cmd --permanent \
+        --add-rich-rule="rule family='ipv6' source address='${subnet}' port port='${port}' protocol='${protocol}' accept"
+}
+
+open_port_for_private_networks() {
+    local port="$1"
+    local protocol="${2:-tcp}"
+
+    for subnet in "${IPV4_PRIVATE_RANGES[@]}"; do
+        allow_ipv4 "${subnet}" "${port}" "${protocol}"
     done
+
+    for subnet in "${IPV6_PRIVATE_RANGES[@]}"; do
+        allow_ipv6 "${subnet}" "${port}" "${protocol}"
+    done
+
+    sudo firewall-cmd --reload
 }
 
 ## devpkg-nuget
-add_private_ipv4_rules 8081 tcp
-add_private_ipv4_rules 8081 udp
-
+open_port_for_private_networks 8081 tcp
+open_port_for_private_networks 8081 udp
 
 ## devpkg-funfair-release
-add_private_ipv4_rules 8082 tcp
-add_private_ipv4_rules 8082 udp
+open_port_for_private_networks 8082 tcp
+open_port_for_private_networks 8082 udp
 
 ## devpkg-funfair-prerelease
-add_private_ipv4_rules 8083 tcp
-add_private_ipv4_rules 8083 udp
+open_port_for_private_networks 8083 tcp
+open_port_for_private_networks 8083 udp
 
 ## devpkg-npm
-add_private_ipv4_rules 8084 tcp
-add_private_ipv4_rules 8084 udp
+open_port_for_private_networks 8084 tcp
+open_port_for_private_networks 8084 udp
 
 ## devpkg-proxy
-add_private_ipv4_rules 8085 tcp
-add_private_ipv4_rules 8085 udp
+open_port_for_private_networks 8085 tcp
+open_port_for_private_networks 8085 udp
 
 ## devpkg-nginx
-add_private_ipv4_rules 5555 tcp
-add_private_ipv4_rules 5555 udp
-add_private_ipv4_rules 5554 tcp
+open_port_for_private_networks 5555 tcp
+open_port_for_private_networks 5555 udp
+open_port_for_private_networks 5554 tcp
 
 ## devpkg-dozzle
-add_private_ipv4_rules 8080 tcp
+open_port_for_private_networks 8080 tcp
 
-sudo firewall-cmd --reload
+success "Firewall rules applied"

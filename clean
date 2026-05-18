@@ -1,3 +1,8 @@
 #! /bin/sh
 
-sudo rm -frv /cache/nuget/api.nuget.local/json/* /cache/nuget/funfair.nuget.local/json/* /cache/nuget/funfair-prerelease.nuget.local/jsom/*
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+sudo rm -frv /cache/nuget/api.nuget.local/json/* /cache/nuget/funfair.nuget.local/json/* /cache/nuget/funfair-prerelease.nuget.local/json/* || die "Could not clean nuget cache"
