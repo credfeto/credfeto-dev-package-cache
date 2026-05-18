@@ -1,4 +1,19 @@
 #! /bin/sh
 
-sudo cp ./certs/*.crt /usr/local/share/ca-certificates/
-sudo update-ca-certificates
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
+
+info "Trusting certificates (Ubuntu)"
+sudo cp ./certs/*.crt /usr/local/share/ca-certificates/ || die "Could not copy certificates"
+sudo update-ca-certificates || die "Could not update CA certificates"
+success "Certificates trusted"

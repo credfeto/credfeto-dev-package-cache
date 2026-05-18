@@ -5,9 +5,16 @@ VERSIONS_TO_INSTALL="8.0 9.0 10.0"
 BASEDIR="$(dirname "$(readlink -f "$0")")"
 
 die() {
-    echo
-    echo "$@"
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
     exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
 }
 
 
@@ -37,6 +44,7 @@ export MSBUILDTERMINALLOGGER="auto"
 [ -f "/bin/bash" ] || die "bash not found"
 [ -f "/bin/tar" ] || die "tar not found"
 
+# shellcheck source=/dev/null
 . "$BASEDIR/install-dotnet"
 
 TOOLS="sleet \
@@ -59,31 +67,28 @@ installDotNet() {
 
     [ -z "$SDK_VERSION" ] && die "Could not determine latest SDK version for $VERSION"
 
-    echo "**********************************************************************************************"
-    echo "* Installing dotnet: $VERSION"
-    echo "*       Current SDK: $SDK_VERSION"
-    echo "**********************************************************************************************"
-    echo ""
+    info "**********************************************************************************************"
+    info "* Installing dotnet: $VERSION"
+    info "*       Current SDK: $SDK_VERSION"
+    info "**********************************************************************************************"
 
     install_dotnet_version "$VERSION" "$SDK_VERSION"
 
    done
-  echo ""
-  echo "**********************************************************************************************"
-  echo "* Dotnet Installed"
-  echo "**********************************************************************************************"
-  echo ""
-  echo ""
+  info ""
+  info "**********************************************************************************************"
+  info "* Dotnet Installed"
+  info "**********************************************************************************************"
 }
 
 update() {
 
-    echo "Updating packages:"
+    info "Updating packages:"
     for PACKAGE in ${TOOLS}; do
-        echo "* Updating $PACKAGE..."
+        info "* Updating $PACKAGE..."
         dotnet tool update --local "$PACKAGE" || dotnet tool install --local "$PACKAGE" --create-manifest-if-needed
     done
-    echo "All packages updated"
+    success "All packages updated"
     dotnet tool list
 }
 
@@ -94,32 +99,32 @@ installDotNet
 
 export PATH="$PATH:$HOME/dotnet:$HOME/.dotnet/tools"
 
-echo "HOME: $HOME"
+info "HOME: $HOME"
 
-echo "Installed SDKS:"
+info "Installed SDKS:"
 dotnet --list-sdks || die "Dotnet not found"
 
-echo "Waiting for start"
+info "Waiting for start"
 sleep 30
 
-echo "Listing Nuget Sources"
+info "Listing Nuget Sources"
 dotnet nuget list source || die "Dotnet not found"
 
-echo "Clearing everything"
+info "Clearing everything"
 dotnet nuget locals all --clear || die "Dotnet not found"
 
-echo "Restoring tools"
+info "Restoring tools"
 dotnet tool restore
 
 dotnet tool list || die "Dotnet not found"
 
-echo "Installing tools:"
+info "Installing tools:"
 for PACKAGE in ${TOOLS}; do
-    echo "* Installing $PACKAGE..."
+    info "* Installing $PACKAGE..."
     dotnet tool install --local "$PACKAGE" --create-manifest-if-needed
 done
 
-echo "All tools installed"
+success "All tools installed"
 
 dotnet tool list
 
@@ -129,5 +134,5 @@ while sleep 120; do
 
     update
 
-    echo "Waiting for new packages..."
+    info "Waiting for new packages..."
 done

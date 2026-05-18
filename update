@@ -1,9 +1,16 @@
 #! /bin/sh
 
 die() {
-    echo
-    echo "$@"
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
     exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
 }
 
 BASEDIR="$(dirname "$(readlink -f "$0")")"
@@ -37,12 +44,12 @@ sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"
 sudo chown -R 998:998 /cache/downloads || die "Could not set cache permissions"
 sudo chown -R 998:998 /cache/dotnet || die "Could not set cache permissions"
 
-chmod a+r "$BASEDIR/certs/*.pfx"
+chmod a+r "$BASEDIR"/certs/*.pfx || die "Could not set cert permissions"
 
 export COMPOSE_BAKE=true
 
 if [ ! -f "$BASEDIR/certs/dh.pem" ]; then
-  echo "Generating PFS"
+  info "Generating PFS"
   openssl dhparam -out "$BASEDIR/certs/dh.pem" 4096
 fi
 
@@ -92,23 +99,9 @@ sudo docker volume create \
 sudo docker volume create \
   --opt type=none \
   --opt o=bind \
-  --opt device=/cache/npm/storage \
-  cache_npm_storage
-
-sudo docker volume create \
-  --opt type=none \
-  --opt o=bind \
-  --opt device=/cache/npm/storage \
-  cache_npm_storage
-
-sudo docker volume create \
-  --opt type=none \
-  --opt o=bind \
   --opt device=/cache/nginx \
   cache_nginx
 
 sudo docker compose pull || die "Could not pull images"
 
 sudo docker compose up -d --remove-orphans || die "Could not start containers"
-
-

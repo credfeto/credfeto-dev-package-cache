@@ -1,16 +1,26 @@
 #! /bin/sh
 
-echo "Tag: $RESTARTER_TAG"
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
 
 [ -z "$RESTARTER_TAG" ] && RESTARTER_TAG=devpkg
 
-while true; do 
-  echo "$RESTARTER_TAG: Sleeping..."
-  sleep 60;
+info "Tag: $RESTARTER_TAG"
 
-#  echo "$RESTARTER_TAG: Find Unhealthy"
-#  docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG"
-#
-  echo "$RESTARTER_TAG Restarting unhealthy"
-  docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG" | xargs --no-run-if-empty docker restart;
+while true; do
+  info "$RESTARTER_TAG: Sleeping..."
+  sleep 60
+
+  info "$RESTARTER_TAG: Restarting unhealthy"
+  docker ps -q -f health=unhealthy -f "name=$RESTARTER_TAG" | xargs --no-run-if-empty docker restart
 done

@@ -1,13 +1,17 @@
 #! /bin/bash
 
-PROG=$0
 die() {
-    echo
-    echo "$@"
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
     exit 1
 }
 
-BASEDIR="$(dirname "$(readlink -f "$0")")"
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
 
 PACKAGE_ID=
 PACKAGE_VERSION=
@@ -39,7 +43,7 @@ BASE=/cache/nuget/packages/nuget/packages
 LOWER_PACKAGEID=${PACKAGE_ID,,}
 
 PACKAGE_FOLDER=$BASE/$LOWER_PACKAGEID/$PACKAGE_VERSION
-echo "Folder: $PACKAGE_FOLDER"
+info "Folder: $PACKAGE_FOLDER"
 [ -d "$PACKAGE_FOLDER" ] || sudo mkdir -p "$PACKAGE_FOLDER"
 
 NUPKG_PACKAGE_FILENAME=$BASE/$LOWER_PACKAGEID/$PACKAGE_VERSION/$LOWER_PACKAGEID.$PACKAGE_VERSION.nupkg
@@ -55,16 +59,16 @@ if [ ! -f "$NUPKG_PACKAGE_FILENAME" ] || [ ! -f "$NUSPEC_PACKAGE_FILENAME" ]; th
 
     wget --no-verbose --tries=1 "$DOWNLOAD_URL" -O "$WORK_PACKAGE" || die "wget: Could not download"
     [ -f "$WORK_PACKAGE" ] || die "Downloaded file does not exist"
-    unzip -v "$WORK_PACKAGE" *.nuspec
-    unzip "$WORK_PACKAGE" *.nuspec -d "$WORKFOLDER/download"
-    mv $WORKFOLDER/download/*.nuspec "$WORK_NUSPEC"
+    unzip -v "$WORK_PACKAGE" "*.nuspec"
+    unzip "$WORK_PACKAGE" "*.nuspec" -d "$WORKFOLDER/download"
+    mv "$WORKFOLDER"/download/*.nuspec "$WORK_NUSPEC"
 
     sudo mv "$WORK_PACKAGE" "$NUPKG_PACKAGE_FILENAME" || die "Could not update $NUPKG_PACKAGE_FILENAME"
     sudo mv "$WORK_NUSPEC" "$NUSPEC_PACKAGE_FILENAME" || die "Could not update $NUSPEC_PACKAGE_FILENAME"
 
 fi
 
-
 [ -f "$NUPKG_PACKAGE_FILENAME" ] || die "$NUPKG_PACKAGE_FILENAME still does not exist after updating"
 [ -f "$NUSPEC_PACKAGE_FILENAME" ] || die "$NUSPEC_PACKAGE_FILENAME still does not exist after updating"
 
+success "Package $PACKAGE_ID $PACKAGE_VERSION downloaded"

@@ -1,10 +1,16 @@
 #! /bin/sh
 
-PROG=$0
 die() {
-    echo
-    echo "$@"
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
     exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
 }
 
 BASEDIR="$(dirname "$(readlink -f "$0")")"
@@ -13,5 +19,7 @@ SOURCE="$BASEDIR/nuget.config"
 
 [ -f "$SOURCE" ] || die "Could not find $SOURCE"
 
-rm "$HOME/.nuget/NuGet/NuGet.Config"
-ln -s "$SOURCE" "$HOME/.nuget/NuGet/NuGet.Config"
+info "Linking NuGet config"
+rm "$HOME/.nuget/NuGet/NuGet.Config" || die "Could not remove existing NuGet config"
+ln -s "$SOURCE" "$HOME/.nuget/NuGet/NuGet.Config" || die "Could not link NuGet config"
+success "NuGet config linked"

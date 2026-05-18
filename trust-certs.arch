@@ -1,8 +1,23 @@
 #! /bin/sh
 
-sudo trust anchor --store ./certs/api.nuget.local.pem
-sudo trust anchor --store ./certs/funfair.nuget.local.pem
-sudo trust anchor --store ./certs/funfair-prerelease.nuget.local.pem
-sudo trust anchor --store ./certs/npm.local.pem
-sudo trust anchor --store ./certs/builds.dotnet.local.pem
-sudo trust extract-compat
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
+
+info "Trusting certificates (Arch)"
+sudo trust anchor --store ./certs/api.nuget.local.pem || die "Could not trust api.nuget.local.pem"
+sudo trust anchor --store ./certs/funfair.nuget.local.pem || die "Could not trust funfair.nuget.local.pem"
+sudo trust anchor --store ./certs/funfair-prerelease.nuget.local.pem || die "Could not trust funfair-prerelease.nuget.local.pem"
+sudo trust anchor --store ./certs/npm.local.pem || die "Could not trust npm.local.pem"
+sudo trust anchor --store ./certs/builds.dotnet.local.pem || die "Could not trust builds.dotnet.local.pem"
+sudo trust extract-compat || die "Could not extract compat"
+success "Certificates trusted"

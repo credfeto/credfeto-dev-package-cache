@@ -1,39 +1,44 @@
 #! /bin/sh
 
-PROG=$0
 die() {
-    echo
-    echo "$@"
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
     exit 1
 }
 
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
+
 BASEDIR="$(dirname "$(readlink -f "$0")")"
-echo "Script Dir: $BASEDIR"
+info "Script Dir: $BASEDIR"
 
-# [ -f "$BASEDIR/.env" ] || die ".env is required"
+info "Updating systemd scripts"
+sed "s:/home/markr/work/credfeto-dev-package-cache:$BASEDIR:g" "systemd-unit/credfeto-package-cache.service" | sudo tee /etc/systemd/system/credfeto-package-cache.service || die "Could not install systemd service"
+sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.timer" /etc/systemd/system/credfeto-package-cache.timer || die "Could not install systemd timer"
 
-echo "Updating systemd scripts"
-cat "systemd-unit/credfeto-package-cache.service" | sed "s:/home/markr/work/credfeto-dev-package-cache:$BASEDIR:g" | sudo tee /etc/systemd/system/credfeto-package-cache.service
-sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.timer" /etc/systemd/system/credfeto-package-cache.timer
-
+# shellcheck source=/dev/null
 . /etc/os-release
 if [ "$ID" = "arch" ]; then
   "$BASEDIR/trust-certs.arch"
 elif [ "$ID" = "ubuntu" ]; then
   "$BASEDIR/trust-certs.ubuntu"
 else
-  echo "Unsupported OS - you need to trust the local certs manually"
+  info "Unsupported OS — you need to trust the local certs manually"
 fi
 
-echo "systemd reload"
-sudo systemctl daemon-reload
+info "systemd reload"
+sudo systemctl daemon-reload || die "Could not reload systemd"
 
-echo "Enable credfeto-package-cache.timer"
-sudo systemctl enable credfeto-package-cache.timer
+info "Enable credfeto-package-cache.timer"
+sudo systemctl enable credfeto-package-cache.timer || die "Could not enable timer"
 
-echo "Start credfeto-package-cache.timer"
-sudo systemctl start credfeto-package-cache.timer
+info "Start credfeto-package-cache.timer"
+sudo systemctl start credfeto-package-cache.timer || die "Could not start timer"
 
 "$BASEDIR/update"
 
-echo "Done"
+success "Done"
