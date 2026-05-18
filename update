@@ -38,6 +38,7 @@ if [ ! -f "$BASEDIR/.env" ]; then
   } > "$BASEDIR/.env"
 fi
 
+sudo chown -R 10001:65533 "$BASEDIR/npm/conf" || die "Could not set npm-conf permissions"
 sudo chown -R 10001:65533 /cache/npm || die "Could not set npm permissions"
 sudo chown -R 1654:1654 /cache/nuget || die "Could not set nuget permissions"
 sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"
@@ -45,7 +46,6 @@ sudo chown -R 998:998 /cache/downloads || die "Could not set cache permissions"
 sudo chown -R 998:998 /cache/dotnet || die "Could not set cache permissions"
 
 chmod a+r "$BASEDIR"/certs/*.pfx || die "Could not set cert permissions"
-
 export COMPOSE_BAKE=true
 
 if [ ! -f "$BASEDIR/certs/dh.pem" ]; then
