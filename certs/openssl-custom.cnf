@@ -11,11 +11,11 @@ ST = London
 L = London
 O = Test
 OU = Test Certificates
-emailAddress = ssl-admin@funfair-prerelease.nuget.local
-CN = funfair-prerelease.nuget.local
+emailAddress = ssl-admin@npm.local
+CN = npm.local
 
 [v3_req]
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = funfair-prerelease.nuget.local
+DNS.1 = npm.local
 DNS.2 = localhost
