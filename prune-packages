@@ -1,0 +1,62 @@
+#!/bin/sh
+
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
+
+VERSIONS_TO_KEEP=2
+
+prune_volume() {
+    volume_name="$1"
+    info "Pruning packages in volume: ${volume_name}"
+
+    docker run --rm -i \
+        -v "${volume_name}:/data" \
+        -e "KEEP=${VERSIONS_TO_KEEP}" \
+        alpine:latest \
+        /bin/sh << 'ALPINE_SCRIPT'
+set -eu
+
+KEEP="${KEEP:-2}"
+PACKAGES_DIR="/data/packages"
+
+if [ ! -d "$PACKAGES_DIR" ]; then
+    printf 'No packages directory found: %s\n' "$PACKAGES_DIR"
+    exit 0
+fi
+
+for pkg_dir in "$PACKAGES_DIR"/*/; do
+    [ -d "$pkg_dir" ] || continue
+
+    # Collect version subdirectories sorted oldest-first by version number
+    versions=$(find "$pkg_dir" -maxdepth 1 -mindepth 1 -type d | sort -V)
+    [ -z "$versions" ] && continue
+
+    total=$(printf '%s\n' "$versions" | wc -l)
+    [ "$total" -le "$KEEP" ] && continue
+
+    to_delete=$((total - KEEP))
+    printf '%s\n' "$versions" | head -n "$to_delete" | while IFS= read -r ver_dir; do
+        printf 'Removing: %s\n' "$ver_dir"
+        rm -rf "$ver_dir"
+    done
+done
+
+printf 'Done.\n'
+ALPINE_SCRIPT
+}
+
+prune_volume "cache_funfair_release"
+prune_volume "cache_funfair_prerelease"
+prune_volume "cache_api_nuget_org"
+
+success "Package pruning complete"

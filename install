@@ -20,6 +20,9 @@ info "Updating systemd scripts"
 sed "s:/home/markr/work/credfeto-dev-package-cache:$BASEDIR:g" "systemd-unit/credfeto-package-cache.service" | sudo tee /etc/systemd/system/credfeto-package-cache.service || die "Could not install systemd service"
 sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache.timer" /etc/systemd/system/credfeto-package-cache.timer || die "Could not install systemd timer"
 
+sed "s:/home/markr/work/credfeto-dev-package-cache:$BASEDIR:g" "systemd-unit/credfeto-package-cache-prune.service" | sudo tee /etc/systemd/system/credfeto-package-cache-prune.service || die "Could not install prune systemd service"
+sudo cp "$BASEDIR/systemd-unit/credfeto-package-cache-prune.timer" /etc/systemd/system/credfeto-package-cache-prune.timer || die "Could not install prune systemd timer"
+
 # shellcheck source=/dev/null
 . /etc/os-release
 if [ "$ID" = "arch" ]; then
@@ -38,6 +41,12 @@ sudo systemctl enable credfeto-package-cache.timer || die "Could not enable time
 
 info "Start credfeto-package-cache.timer"
 sudo systemctl start credfeto-package-cache.timer || die "Could not start timer"
+
+info "Enable credfeto-package-cache-prune.timer"
+sudo systemctl enable credfeto-package-cache-prune.timer || die "Could not enable prune timer"
+
+info "Start credfeto-package-cache-prune.timer"
+sudo systemctl start credfeto-package-cache-prune.timer || die "Could not start prune timer"
 
 "$BASEDIR/update"
 
