@@ -1,0 +1,11 @@
+[Unit]
+Description=Prune Credfeto Package Cache
+After=network.target
+
+[Service]
+User=markr
+Type=oneshot
+IOSchedulingClass=idle
+CPUSchedulingPolicy=idle
+WorkingDirectory=/home/markr/work/credfeto-dev-package-cache
+ExecStart=/bin/flock -n /tmp/devpkg-prune.lock -c /home/markr/work/credfeto-dev-package-cache/prune-packages
