@@ -45,13 +45,18 @@ sudo chown -R 1654:1654 /cache/proxy || die "Could not set proxy permissions"
 sudo chown -R 998:998 /cache/downloads || die "Could not set cache permissions"
 sudo chown -R 998:998 /cache/dotnet || die "Could not set cache permissions"
 
-chmod a+r "$BASEDIR"/certs/*.pfx || die "Could not set cert permissions"
 export COMPOSE_BAKE=true
 
 if [ ! -f "$BASEDIR/certs/dh.pem" ]; then
   info "Generating PFS"
   openssl dhparam -out "$BASEDIR/certs/dh.pem" 4096
 fi
+
+info "Setting permissions on files mounted into containers"
+chmod a+rx "$BASEDIR/certs" || die "Could not set certs directory permissions"
+chmod a+r "$BASEDIR"/certs/* || die "Could not set certs file permissions"
+chmod a+r "$BASEDIR/cache.appsettings.json" || die "Could not set appsettings permissions"
+chmod -R a+rX "$BASEDIR/npm/conf" || die "Could not set npm conf permissions"
 
 sudo docker volume create \
   --opt type=none \
