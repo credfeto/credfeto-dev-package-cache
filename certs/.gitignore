@@ -1,1 +1,7 @@
 dh.pem
+!api.nuget.local.pfx
+!funfair.nuget.local.pfx
+!funfair-prerelease.nuget.local.pfx
+!npm.local.pfx
+!builds.dotnet.local.pfx
+!localhost.pfx
