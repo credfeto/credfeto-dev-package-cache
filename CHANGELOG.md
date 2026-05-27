@@ -13,6 +13,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 ### Added
 ### Fixed
 - Fixed OpenSSL 3.x PKCS12 passphrase compatibility by adding -legacy flag to openssl pkcs12 export and import commands in certs/generate; regenerated all TLS certificates with 100-year validity
+- Nginx cache directory not being given correct ownership on install, causing permission denied errors when caching upstream responses
 ### Changed
 ### Deprecated
 ### Removed
