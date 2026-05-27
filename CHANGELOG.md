@@ -14,6 +14,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 ### Fixed
 - Fixed OpenSSL 3.x PKCS12 passphrase compatibility by adding -legacy flag to openssl pkcs12 export and import commands in certs/generate; regenerated all TLS certificates with 100-year validity
 ### Changed
+- Moved sample nuget.config to client-config/nuget.config
 ### Deprecated
 ### Removed
 ### Deployment Changes
