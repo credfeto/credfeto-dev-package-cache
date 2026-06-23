@@ -201,7 +201,6 @@ services:
     stop_signal: SIGINT
     volumes:
       - ./certs:/etc/nginx/ssl:r
-      - cache_nginx:/var/cache/nginx/proxy
     ports:
       - 5555:5555/tcp
       - 5555:5555/udp

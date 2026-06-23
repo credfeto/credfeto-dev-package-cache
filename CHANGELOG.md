@@ -16,6 +16,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - Nginx cache directory not being given correct ownership on install, causing permission denied errors when caching upstream responses
 ### Changed
 - Moved sample nuget.config to client-config/nuget.config
+- Disabled nginx proxy caching as upstream services handle their own caching
 ### Deprecated
 ### Removed
 ### Deployment Changes
