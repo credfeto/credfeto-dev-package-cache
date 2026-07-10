@@ -259,10 +259,16 @@ services:
     cap_drop:
       - ALL
     # The /var/cache/nginx tmpfs mount below replaces the image's pre-owned
-    # cache directory with a fresh, root-owned mount; nginx's startup then
-    # needs to chown its temp subdirectories to the nginx user.
+    # cache directory with a fresh, root-owned mount, so nginx needs CHOWN
+    # to take ownership of its temp subdirectories. It also still attempts
+    # setgid()/setuid() to its compiled-in `user nginx;` default even though
+    # the process already starts unprivileged, so SETGID/SETUID are needed
+    # too — this is the standard minimal capability set for hardened nginx
+    # containers.
     cap_add:
       - CHOWN
+      - SETGID
+      - SETUID
     tmpfs:
       - /tmp
       - /var/cache/nginx
