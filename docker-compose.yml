@@ -254,16 +254,9 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     read_only: true
-    security_opt:
-      - no-new-privileges:true
-    cap_drop:
-      - ALL
-    # nginx master runs as root and drops privileges to the "nginx" user for
-    # worker processes (compiled-in default; no `user` directive override in
-    # nginx.conf), which requires these two capabilities to remain.
-    cap_add:
-      - SETUID
-      - SETGID
+    # cap_drop/no-new-privileges caused devpkg-nginx to crash-loop on restart
+    # (SETUID/SETGID was not sufficient in practice) — reverted pending
+    # further investigation. See #23.
     tmpfs:
       - /tmp
       - /var/cache/nginx
