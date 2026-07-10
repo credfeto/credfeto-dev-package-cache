@@ -271,13 +271,12 @@ services:
       - SETUID
     # Explicit mode, since some Docker/Podman versions default anonymous
     # tmpfs mounts to a non-writable root-owned mode instead of 1777.
+    # Inline colon-suffixed options (rather than the long target/mode map
+    # form) for compatibility with older Compose parsers.
     tmpfs:
-      - target: /tmp
-        mode: 1777
-      - target: /var/cache/nginx
-        mode: 1777
-      - target: /var/run
-        mode: 1777
+      - /tmp:mode=1777
+      - /var/cache/nginx:mode=1777
+      - /var/run:mode=1777
     volumes:
       - ./certs:/etc/nginx/ssl:r
     ports:
