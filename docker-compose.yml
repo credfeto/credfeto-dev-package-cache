@@ -10,6 +10,10 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
     environment:
@@ -38,6 +42,10 @@ services:
       # - DOZZLE_AUTH_PROVIDER=simple
     restart: always
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
     healthcheck:
@@ -56,6 +64,8 @@ services:
     stop_signal: SIGINT
     network_mode: none
     read_only: true
+    security_opt:
+      - no-new-privileges:true
     tmpfs:
       - /tmp
     environment:
@@ -75,6 +85,10 @@ services:
     stop_grace_period: 500s
     stop_signal: SIGINT
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
 #    environment:
@@ -103,6 +117,10 @@ services:
     stop_grace_period: 500s
     stop_signal: SIGINT
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
     environment:
@@ -132,6 +150,10 @@ services:
     stop_grace_period: 500s
     stop_signal: SIGINT
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
     environment:
@@ -162,6 +184,10 @@ services:
     stop_grace_period: 500s
     stop_signal: SIGINT
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
     environment:
@@ -192,6 +218,10 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
     environment:
@@ -224,6 +254,16 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    # nginx master runs as root and drops privileges to the "nginx" user for
+    # worker processes (compiled-in default; no `user` directive override in
+    # nginx.conf), which requires these two capabilities to remain.
+    cap_add:
+      - SETUID
+      - SETGID
     tmpfs:
       - /tmp
       - /var/cache/nginx
