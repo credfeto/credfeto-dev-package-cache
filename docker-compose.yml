@@ -258,6 +258,11 @@ services:
       - no-new-privileges:true
     cap_drop:
       - ALL
+    # The /var/cache/nginx tmpfs mount below replaces the image's pre-owned
+    # cache directory with a fresh, root-owned mount; nginx's startup then
+    # needs to chown its temp subdirectories to the nginx user.
+    cap_add:
+      - CHOWN
     tmpfs:
       - /tmp
       - /var/cache/nginx
