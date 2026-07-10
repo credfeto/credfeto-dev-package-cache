@@ -1,5 +1,5 @@
 
-FROM nginx:stable-alpine
+FROM nginxinc/nginx-unprivileged:stable-alpine
 
 WORKDIR /usr/src/app
 

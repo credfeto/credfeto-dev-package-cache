@@ -254,9 +254,10 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     read_only: true
-    # cap_drop/no-new-privileges caused devpkg-nginx to crash-loop on restart
-    # (SETUID/SETGID was not sufficient in practice) — reverted pending
-    # further investigation. See #23.
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
     tmpfs:
       - /tmp
       - /var/cache/nginx

@@ -12,6 +12,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 ### Security
 - Hardened containers in docker-compose.yml with read-only root filesystems, adding tmpfs mounts for the writable scratch paths each service needs
 - Hardened containers in docker-compose.yml by dropping all Linux capabilities and setting no-new-privileges, except devpkg-nginx which needs its default capability set to start reliably
+- Switched devpkg-nginx to the nginxinc/nginx-unprivileged base image and re-applied cap_drop: [ALL] / no-new-privileges, since it no longer needs to start as root
 ### Added
 ### Fixed
 - Fixed OpenSSL 3.x PKCS12 passphrase compatibility by adding -legacy flag to openssl pkcs12 export and import commands in certs/generate; regenerated all TLS certificates with 100-year validity
