@@ -9,6 +9,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       WATCHTOWER_NOTIFICATIONS_HOSTNAME: dev-cache
       WATCHTOWER_POLL_INTERVAL: 3600
@@ -34,6 +37,9 @@ services:
       # See https://dozzle.dev/guide/authentication
       # - DOZZLE_AUTH_PROVIDER=simple
     restart: always
+    read_only: true
+    tmpfs:
+      - /tmp
     healthcheck:
       test: ["CMD", "/dozzle", "healthcheck"]
       interval: 3s
@@ -49,6 +55,9 @@ services:
     stop_grace_period: 5s
     stop_signal: SIGINT
     network_mode: none
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       - RESTARTER_TAG=devpkg
     cap_drop:
@@ -65,6 +74,9 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    read_only: true
+    tmpfs:
+      - /tmp
 #    environment:
 #      - Proxy__UpstreamUrls__0=https://api.nuget.org
 #      - Proxy__PublicUrl=https://api.nuget.local:5555
@@ -90,6 +102,9 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       - Proxy__UpstreamUrls__0=https://api.nuget.org
       - Proxy__PublicUrl=${API_NUGET_URL}
@@ -116,6 +131,9 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget
@@ -143,6 +161,9 @@ services:
     restart: always
     stop_grace_period: 500s
     stop_signal: SIGINT
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       - Proxy__UpstreamUrls__0=https://dotnet-nuget-prerelease.s3.eu-west-1.amazonaws.com
       - Proxy__UpstreamUrls__1=https://s3.eu-west-1.amazonaws.com/dotnet-nuget-prerelease
@@ -170,6 +191,9 @@ services:
     restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
+    read_only: true
+    tmpfs:
+      - /tmp
     environment:
       - VERDACCIO_PORT=4873
       - VERDACCIO_PUBLIC_URL=${NPM_URL}
@@ -199,6 +223,11 @@ services:
     restart: always
     stop_grace_period: 5s
     stop_signal: SIGINT
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
     volumes:
       - ./certs:/etc/nginx/ssl:r
     ports:
