@@ -1,3 +1,4 @@
+---
 name: "Build: Nginx Docker Image"
 on:
   push:
