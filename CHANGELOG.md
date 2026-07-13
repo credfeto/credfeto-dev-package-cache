@@ -21,6 +21,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 ### Changed
 - Moved sample nuget.config to client-config/nuget.config
 - Disabled nginx proxy caching as upstream services handle their own caching
+- update script no longer prunes the docker builder or system cache on buildagent-* hosts
 ### Deprecated
 ### Removed
 ### Deployment Changes
