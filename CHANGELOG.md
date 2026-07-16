@@ -18,6 +18,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 ### Fixed
 - Fixed OpenSSL 3.x PKCS12 passphrase compatibility by adding -legacy flag to openssl pkcs12 export and import commands in certs/generate; regenerated all TLS certificates with 100-year validity
 - Nginx cache directory not being given correct ownership on install, causing permission denied errors when caching upstream responses
+- Increased nginx proxy_connect/send/read timeouts to 99s on the NuGet/npm cache vhosts, fixing 504 Gateway Timeout errors when a cold-cache package fetch from the upstream source took longer than nginx's default 60s timeout
 ### Changed
 - Moved sample nuget.config to client-config/nuget.config
 - Disabled nginx proxy caching as upstream services handle their own caching
