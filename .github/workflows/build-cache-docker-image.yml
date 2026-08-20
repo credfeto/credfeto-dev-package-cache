@@ -40,7 +40,7 @@ jobs:
           echo "DOCKER_CONTENT_TRUST=1" >> "$GITHUB_ENV"
 
       - name: "Docker: Test Build"
-        uses: docker/build-push-action@v6.15.0
+        uses: docker/build-push-action@v7.3.0
         with:
           context: ${{github.workspace}}/cache
           platforms: linux/amd64
@@ -50,7 +50,7 @@ jobs:
           provenance: false
 
       - name: "Docker: Build with tags"
-        uses: docker/build-push-action@v6.15.0
+        uses: docker/build-push-action@v7.3.0
         with:
           context: ${{github.workspace}}/cache
           platforms: linux/amd64
