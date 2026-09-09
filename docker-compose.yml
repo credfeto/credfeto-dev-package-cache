@@ -56,7 +56,7 @@ services:
       start_period: 30s
 
   devpkg-restarter:
-    image: docker-registry.markridgwell.com/credfeto/cache-restarter:latest
+    image: ghcr.io/credfeto/cache-restarter:latest
     container_name: devpkg-restarter
     hostname: devpkg-restarter
     restart: always
@@ -248,7 +248,7 @@ services:
           - devpkg-npm.local
 
   devpkg-nginx:
-    image: docker-registry.markridgwell.com/credfeto/cache-nginx:latest
+    image: ghcr.io/credfeto/cache-nginx:latest
     container_name: devpkg-nginx
     restart: always
     stop_grace_period: 5s
@@ -305,7 +305,7 @@ services:
           - builds.dotnet.local
 
 #  devpkg-cache:
-#    image: docker-registry.markridgwell.com/credfeto/cache-checker:latest
+#    image: ghcr.io/credfeto/cache-checker:latest
 #    container_name: devpkg-cache
 #    restart: always
 #    stop_grace_period: 5s
