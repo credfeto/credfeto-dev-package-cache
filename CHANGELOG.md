@@ -24,10 +24,13 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - Moved sample nuget.config to client-config/nuget.config
 - Disabled nginx proxy caching as upstream services handle their own caching
 - update script no longer prunes the docker builder or system cache on buildagent-* hosts
+- Push development container images to ghcr.io/credfeto instead of the private container registry, and point docker-compose at the new locations for the cache, nginx and restarter services.
 ### Deprecated
 ### Removed
 ### Deployment Changes
+
 <!--
 Releases that have at least been deployed to staging, BUT NOT necessarily released to live.  Changes should be moved from [Unreleased] into here as they are merged into the appropriate release branch
 -->
+
 ## [0.0.0] - Project created
