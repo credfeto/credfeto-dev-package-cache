@@ -56,7 +56,7 @@ services:
       start_period: 30s
 
   devpkg-restarter:
-    image: docker-registry.markridgwell.com/credfeto/cache-restarter:latest
+    image: ghcr.io/credfeto/cache-restarter:latest
     container_name: devpkg-restarter
     hostname: devpkg-restarter
     restart: always
@@ -100,7 +100,7 @@ services:
       - "8085:8081/tcp"
     volumes:
       - cache_proxy:/data
-      - ./certs/builds.dotnet.local.pfx:/usr/src/app/server.pfx:r
+      - ./certs/builds.dotnet.local.pfx:/usr/src/app/server.pfx:ro
       - ./cache.appsettings.json:/usr/src/app/appsettings-local.json:ro
     labels:
       - "autoheal=devpkg"
@@ -134,7 +134,7 @@ services:
       - "8081:8081/udp"
     volumes:
       - cache_api_nuget_org:/data
-      - ./certs/api.nuget.local.pfx:/usr/src/app/server.pfx:r
+      - ./certs/api.nuget.local.pfx:/usr/src/app/server.pfx:ro
     labels:
       - "autoheal=devpkg"
     networks:
@@ -168,7 +168,7 @@ services:
       - "8082:8081/udp"
     volumes:
       - cache_funfair_release:/data
-      - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
+      - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:ro
     labels:
       - "autoheal=devpkg"
     networks:
@@ -202,7 +202,7 @@ services:
       - "8083:8081/udp"
     volumes:
       - cache_funfair_prerelease:/data
-      - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:r
+      - ./certs/funfair.nuget.local.pfx:/usr/src/app/server.pfx:ro
     labels:
       - "autoheal=devpkg"
     networks:
@@ -248,7 +248,7 @@ services:
           - devpkg-npm.local
 
   devpkg-nginx:
-    image: docker-registry.markridgwell.com/credfeto/cache-nginx:latest
+    image: ghcr.io/credfeto/cache-nginx:latest
     container_name: devpkg-nginx
     restart: always
     stop_grace_period: 5s
@@ -278,7 +278,7 @@ services:
       - /var/cache/nginx:mode=1777
       - /var/run:mode=1777
     volumes:
-      - ./certs:/etc/nginx/ssl:r
+      - ./certs:/etc/nginx/ssl:ro
     ports:
       - 5555:5555/tcp
       - 5555:5555/udp
@@ -305,7 +305,7 @@ services:
           - builds.dotnet.local
 
 #  devpkg-cache:
-#    image: docker-registry.markridgwell.com/credfeto/cache-checker:latest
+#    image: ghcr.io/credfeto/cache-checker:latest
 #    container_name: devpkg-cache
 #    restart: always
 #    stop_grace_period: 5s
