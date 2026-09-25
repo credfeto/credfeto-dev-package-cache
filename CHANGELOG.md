@@ -26,6 +26,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - Disabled nginx proxy caching as upstream services handle their own caching
 - update script no longer prunes the docker builder or system cache on buildagent-* hosts
 - Push development container images to ghcr.io/credfeto instead of the private container registry, and point docker-compose at the new locations for the cache, nginx and restarter services.
+- Image pruning during update now keeps the latest and highest version tag of each image instead of removing all unused images, and docker_prune_keep_latest reports progress with the standard output helpers
 ### Deprecated
 ### Removed
 ### Deployment Changes
