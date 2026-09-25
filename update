@@ -112,7 +112,7 @@ sudo docker compose pull || die "Could not pull images"
 
 sudo docker compose up -d --remove-orphans || die "Could not start containers"
 
-sudo docker image prune -a -f || die "Could not prune image cache"
+"$BASEDIR/docker_prune_keep_latest" || die "Could not prune image cache"
 
 case "$(hostname)" in
   buildagent-*)
