@@ -1,0 +1,80 @@
+#!/bin/sh
+# Prune docker images, keeping per repository: the `latest` tag and the highest version tag (sort -V).
+# Usage: docker_prune_keep_latest [--dry-run]
+# In-use images refuse to delete without -f, so running containers are never affected.
+
+die() {
+    if [ -t 2 ]; then
+        printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    else
+        printf '\n✗ %s\n' "$*" >&2
+    fi
+    exit 1
+}
+
+success() {
+    if [ -t 1 ]; then
+        printf '\n\033[32m✓\033[0m %s\n' "$*"
+    else
+        printf '\n✓ %s\n' "$*"
+    fi
+}
+
+info() {
+    if [ -t 1 ]; then
+        printf '\n\033[32m→\033[0m %s\n' "$*"
+    else
+        printf '\n→ %s\n' "$*"
+    fi
+}
+
+# Returns true (0) when running inside a Claude Code Bash-tool session.
+# Claude Code sets CLAUDECODE=1 in every shell it spawns via the Bash tool;
+# that value is inherited by subprocesses (e.g. git hooks).
+# Source: https://docs.anthropic.com/en/docs/claude-code/settings#environment-variables
+is_ai_agent() {
+    [ "${CLAUDECODE}" = "1" ]
+}
+
+DRY=0
+case "${1:-}" in
+    "") ;;
+    --dry-run) DRY=1 ;;
+    *)
+        if is_ai_agent; then
+            die "Unknown argument '$1'. Usage: docker_prune_keep_latest [--dry-run]. Did you read the .ai-instructions?"
+        else
+            die "Unknown argument '$1'. Usage: docker_prune_keep_latest [--dry-run]"
+        fi
+        ;;
+esac
+
+command -v docker >/dev/null 2>&1 || die "docker is not installed or not on PATH"
+command -v sudo >/dev/null 2>&1 || die "sudo is not installed or not on PATH"
+
+repos=$(sudo docker image ls --format '{{.Repository}} {{.Tag}}' | grep -v ' <none>$' | awk '{print $1}' | sort -u) ||
+    die "Failed to list docker images"
+
+removed=0
+for repo in $repos; do
+    tags=$(sudo docker image ls "$repo" --format '{{.Tag}}' | grep -v '^<none>$')
+    keep=$(printf '%s\n' "$tags" | grep -v '^latest$' | sort -V | tail -1)
+    for t in $tags; do
+        [ "$t" = latest ] && continue
+        [ "$t" = "$keep" ] && continue
+        if [ "$DRY" = 1 ]; then
+            info "would remove $repo:$t (keeping ${keep:-latest})"
+        elif sudo docker rmi "$repo:$t" >/dev/null 2>&1; then
+            info "removed $repo:$t"
+            removed=$((removed + 1))
+        fi
+    done
+done
+
+if [ "$DRY" = 1 ]; then
+    dangling=$(sudo docker image ls -f dangling=true -q | wc -l)
+    success "Dry run complete: $dangling dangling images would be pruned"
+else
+    sudo docker image prune -f >/dev/null || die "Failed to prune dangling images"
+    success "Pruned: removed $removed tagged images and all dangling images"
+fi
