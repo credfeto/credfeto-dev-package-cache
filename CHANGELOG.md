@@ -16,6 +16,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - Pinned an explicit 1777 mode on devpkg-nginx's tmpfs mounts using inline colon-suffixed options, since some Docker/Podman versions default anonymous tmpfs to a non-writable root-owned mode and not every host's Compose parser supports the long-form tmpfs mount syntax
 ### Added
 ### Fixed
+- install now runs the update and prune systemd services as the owner of the checkout instead of always as markr, so a checkout under /root no longer fails every run with 200/CHDIR (which left update, and its certs chmod, never running)
 - Fixed OpenSSL 3.x PKCS12 passphrase compatibility by adding -legacy flag to openssl pkcs12 export and import commands in certs/generate; regenerated all TLS certificates with 100-year validity
 - Nginx cache directory not being given correct ownership on install, causing permission denied errors when caching upstream responses
 - Increased nginx proxy_connect/send/read timeouts to 99s on the NuGet/npm cache vhosts, fixing 504 Gateway Timeout errors when a cold-cache package fetch from the upstream source took longer than nginx's default 60s timeout
