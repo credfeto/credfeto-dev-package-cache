@@ -78,7 +78,7 @@ services:
 #      backend:
 
   devpkg-proxy:
-    image: docker-registry.markridgwell.com/credfeto/cache-proxy:latest
+    image: ghcr.io/credfeto/cache-proxy:latest
     container_name: devpkg-proxy
     hostname: dev-proxy
     restart: always
@@ -110,7 +110,7 @@ services:
           - devpkg-dotnet-build.local
 
   devpkg-nuget:
-    image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
+    image: ghcr.io/credfeto/nuget-proxy:latest
     container_name: devpkg-nuget
     hostname: nuget
     restart: always
@@ -143,7 +143,7 @@ services:
           - devpkg-nuget.local
 
   devpkg-funfair-release:
-    image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
+    image: ghcr.io/credfeto/nuget-proxy:latest
     container_name: devpkg-funfair-release
     hostname: funfair-release
     restart: always
@@ -177,7 +177,7 @@ services:
           - devpkg-funfair-release.local
 
   devpkg-funfair-prerelease:
-    image: docker-registry.markridgwell.com/credfeto/nuget-proxy:latest
+    image: ghcr.io/credfeto/nuget-proxy:latest
     container_name: devpkg-funfair-prerelease
     hostname: funfair-prerelease
     restart: always
