@@ -15,11 +15,11 @@ uplinks:
 packages:
 
   '@*/*':
-    access: $anonymous
+    access: $all
     publish: $anonymous
     proxy: npmjs
   '**':
-    access: $anonymous
+    access: $all
     publish: $anonymous
     proxy: npmjs
 log: {type: stdout, format: pretty, level: info}
