@@ -43,7 +43,7 @@ RUN \
     mkdir -p /root/.nuget/NuGet && \
     cp /usr/src/app/nuget.config /root/.nuget/NuGet/NuGet.Config
 
-USER updater
+USER 998
 
 RUN \
     mkdir -p /local/dotnet && \

@@ -18,7 +18,8 @@ services:
       - /tmp
     environment:
       WATCHTOWER_NOTIFICATIONS_HOSTNAME: dev-cache
-      WATCHTOWER_POLL_INTERVAL: 3600
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_SCHEDULE: "${WATCHTOWER_SCHEDULE:-0 6 * * * *}"
 
   devpkg-dozzle:
     image: amir20/dozzle:latest
