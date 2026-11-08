@@ -43,7 +43,7 @@ jobs:
       - name: "Docker Trust Enable"
         shell: bash
         run: |
-          echo "DOCKER_CONTENT_TRUST_ORIGINAL=${{env.DOCKER_CONTENT_TRUST}}" >> "$GITHUB_ENV"
+          echo "DOCKER_CONTENT_TRUST_ORIGINAL=${DOCKER_CONTENT_TRUST:-}" >> "$GITHUB_ENV"
           echo "DOCKER_CONTENT_TRUST=1" >> "$GITHUB_ENV"
 
       - name: "Docker: Test Build"
@@ -68,4 +68,4 @@ jobs:
 
       - name: "Docker Trust Restore"
         shell: bash
-        run: echo "DOCKER_CONTENT_TRUST=${{env.DOCKER_CONTENT_TRUST_ORIGINAL}}" >> "$GITHUB_ENV"
+        run: echo "DOCKER_CONTENT_TRUST=${DOCKER_CONTENT_TRUST_ORIGINAL:-}" >> "$GITHUB_ENV"
