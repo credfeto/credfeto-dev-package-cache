@@ -29,6 +29,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - Push development container images to ghcr.io/credfeto instead of the private container registry, and point docker-compose at the new locations for the cache, nginx and restarter services.
 - Image pruning during update now keeps the latest and highest version tag of each image instead of removing all unused images, and docker_prune_keep_latest reports progress with the standard output helpers
 - Added watchtower image cleanup and an overridable WATCHTOWER_SCHEDULE cron schedule (replacing WATCHTOWER_POLL_INTERVAL)
+- Pinned GitHub Actions uses: references to commit SHAs and enabled Dependabot github-actions updates
 ### Deprecated
 ### Removed
 ### Deployment Changes
