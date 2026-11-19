@@ -22,6 +22,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - Increased nginx proxy_connect/send/read timeouts to 99s on the NuGet/npm cache vhosts, fixing 504 Gateway Timeout errors when a cold-cache package fetch from the upstream source took longer than nginx's default 60s timeout
 - Trimmed trailing whitespace in committed local-dev TLS cert bag-attribute comments so the pre-commit baseline passes cleanly
 - update script failing every run with 'Could not set npm conf permissions' because it chmod-ed npm/conf without sudo after chowning it to the container user
+- TBD - to be finalized after review
 ### Changed
 - Moved sample nuget.config to client-config/nuget.config
 - Disabled nginx proxy caching as upstream services handle their own caching
