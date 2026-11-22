@@ -40,6 +40,24 @@ allow_ipv6() {
         --add-rich-rule="rule family='ipv6' source address='${subnet}' port port='${port}' protocol='${protocol}' accept"
 }
 
+remove_rule() {
+    # Ignore "NOT_ENABLED": the rule is already gone on hosts that never had it.
+    sudo firewall-cmd --permanent --remove-rich-rule="$1" > /dev/null 2>&1 || true
+}
+
+close_port_for_private_networks() {
+    local port="$1"
+    local protocol="${2:-tcp}"
+
+    for subnet in "${IPV4_PRIVATE_RANGES[@]}"; do
+        remove_rule "rule family='ipv4' source address='${subnet}' port port='${port}' protocol='${protocol}' accept"
+    done
+
+    for subnet in "${IPV6_PRIVATE_RANGES[@]}"; do
+        remove_rule "rule family='ipv6' source address='${subnet}' port port='${port}' protocol='${protocol}' accept"
+    done
+}
+
 open_port_for_private_networks() {
     local port="$1"
     local protocol="${2:-tcp}"
@@ -78,8 +96,8 @@ open_port_for_private_networks 5555 tcp
 open_port_for_private_networks 5555 udp
 open_port_for_private_networks 5554 tcp
 
-## devpkg-dozzle
-open_port_for_private_networks 8080 tcp
+## devpkg-dozzle (removed): close the port it used to open
+close_port_for_private_networks 8080 tcp
 
 sudo firewall-cmd --reload || die "Could not reload firewall"
 success "Firewall rules applied"

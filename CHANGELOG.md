@@ -32,6 +32,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 - Pinned GitHub Actions uses: references to commit SHAs and enabled Dependabot github-actions updates
 ### Deprecated
 ### Removed
+- devpkg-dozzle log viewer (port 8080, no authentication, Docker socket mounted): container logs now go to the journal and on to VictoriaLogs (credfeto-setup-arch-vm journald log driver), so it duplicated that. `./update` removes the container (`docker compose up -d --remove-orphans`) and `firewall` now closes the 8080 rules it used to open
 ### Deployment Changes
 
 <!--
