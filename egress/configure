@@ -1,0 +1,101 @@
+#!/bin/sh
+
+# Locks the dev package cache's egress down. Called by ../install as root;
+# after that devpkg-firewall-sync.timer re-runs it whenever egress/ changes.
+# It is deliberately NOT called from ../update: that runs every 5 minutes from
+# credfeto-package-cache.timer and does the git pull, and the sync timer picks
+# up what it pulled.
+#
+# Egress: one nftables table, inet dpc_egress, built and loaded by
+# egress/egress (see there): host_out for what the host itself may connect to,
+# docker_fwd for what the containers (the NuGet, npm and .NET build proxies,
+# Watchtower) may connect to. The whole table, address sets included, is
+# replaced in one nft transaction, so a refresh never reloads firewalld and a
+# failed load keeps the previous rules.
+#
+# DEVPKG_FIREWALL_ENFORCE=true in .env is the single enforcement knob: the
+# table drops what it does not allow. Otherwise (the default) unmatched traffic
+# still flows and is only logged, with the prefixes "devpkg-egress-unmatched: "
+# and "devpkg-egress-docker-unmatched: ". The same rules serve both modes: run
+# in observation mode, check the log for anything legitimate, then enforce.
+#
+# Ingress is not handled here: ../firewall keeps managing the firewalld rules
+# for the published ports.
+
+set -eu
+
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "$*" >&2
+    exit 1
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "$*"
+}
+
+success() {
+    printf '\n\033[32m✓\033[0m %s\n' "$*"
+}
+
+[ "$(id -u)" -eq 0 ] || die "must run as root"
+command -v nft > /dev/null 2>&1 || die "nft not found"
+command -v python3 > /dev/null 2>&1 || die "python3 not found"
+
+# One run at a time: devpkg-firewall-sync.timer can fire while ../install (or
+# a manual run) is still configuring.
+exec 9> /run/lock/credfeto-dev-package-cache-firewall.lock
+flock 9
+
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/../.env"
+# Keep these in sync with egress/egress and egress/sync.
+STATE_DIR="/var/lib/credfeto-dev-package-cache"
+SHARE_DIR="/usr/local/share/credfeto-dev-package-cache"
+
+env_value() {
+    [ -f "${ENV_FILE}" ] || return 0
+    grep -E "^[[:space:]]*$1[[:space:]]*=" "${ENV_FILE}" | tail -n 1 | cut -d= -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/^"\(.*\)"$/\1/'
+}
+
+ENFORCE="false"
+if [ "$(env_value DEVPKG_FIREWALL_ENFORCE)" = "true" ]; then
+    ENFORCE="true"
+fi
+
+info "Configuring the egress firewall (enforce ${ENFORCE})..."
+
+# --- The egress table and its refresh timer ---
+install -m 755 "${SCRIPT_DIR}/egress" /usr/local/bin/devpkg-egress || die "Could not install devpkg-egress"
+install -d -m 755 "${SHARE_DIR}"
+for RANGES_FILE in github-egress-ranges cloudflare-egress-ranges aws-s3-egress-ranges; do
+    install -m 644 "${SCRIPT_DIR}/${RANGES_FILE}" "${SHARE_DIR}/${RANGES_FILE}" || die "Could not install ${RANGES_FILE}"
+done
+install -m 644 "${SCRIPT_DIR}/devpkg-egress-refresh.service" /etc/systemd/system/devpkg-egress-refresh.service
+install -m 644 "${SCRIPT_DIR}/devpkg-egress-refresh.timer" /etc/systemd/system/devpkg-egress-refresh.timer
+# The setting egress/egress reads, written before the timers restart so that
+# no run picks up a stale one.
+install -d -m 755 "${STATE_DIR}"
+printf '%s\n' "${ENFORCE}" > "${STATE_DIR}/egress-enforce"
+
+systemctl daemon-reload
+systemctl enable devpkg-egress-refresh.timer > /dev/null 2>&1
+systemctl restart devpkg-egress-refresh.timer
+# Load the table now rather than at the timer's first run.
+/usr/local/bin/devpkg-egress || die "Could not load the egress table"
+
+# --- Keep the firewall in step with the repo: egress/sync re-runs this
+# script when anything under egress/ changes, e.g. the daily egress-ranges
+# commit that ../update pulls. A symlink, so the script finds the checkout it
+# lives in.
+ln -sfn "${SCRIPT_DIR}/sync" /usr/local/sbin/devpkg-firewall-sync
+install -m 644 "${SCRIPT_DIR}/devpkg-firewall-sync.service" /etc/systemd/system/devpkg-firewall-sync.service
+install -m 644 "${SCRIPT_DIR}/devpkg-firewall-sync.timer" /etc/systemd/system/devpkg-firewall-sync.timer
+systemctl daemon-reload
+systemctl enable devpkg-firewall-sync.timer > /dev/null 2>&1
+systemctl restart devpkg-firewall-sync.timer
+
+# Record the commit whose firewall config is now live; egress/sync compares
+# against it.
+git -C "${SCRIPT_DIR}" rev-parse HEAD > "${STATE_DIR}/firewall-applied-head"
+
+success "Egress firewall configured (enforce ${ENFORCE})."

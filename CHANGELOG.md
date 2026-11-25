@@ -10,6 +10,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 
 ## [Unreleased]
 ### Security
+- Host egress firewall in observation mode (`egress/configure`, run by `install`): one nftables table, `inet dpc_egress`, loaded atomically, lists what the host and the containers may connect to (the NuGet, FunFair S3, npm and .NET build upstreams, GitHub, ghcr.io and Docker Hub, the reverse proxies, DNS, NTP and central logging). CDN-fronted names are re-resolved every 10 minutes and stay allowed for 7 days after they were last seen; GitHub, Cloudflare and AWS S3 eu-west-1 use their published ranges, refreshed by the daily `Repo: Update egress ranges` workflow; `devpkg-firewall-sync.timer` re-applies it when `egress/` changes. Unmatched connections are only logged (`devpkg-egress-unmatched`, `devpkg-egress-docker-unmatched`) until `DEVPKG_FIREWALL_ENFORCE=true` is set in `.env`
 - Hardened containers in docker-compose.yml with read-only root filesystems, adding tmpfs mounts for the writable scratch paths each service needs
 - Hardened containers in docker-compose.yml by dropping all Linux capabilities and setting no-new-privileges, except devpkg-nginx which needs its default capability set to start reliably
 - Switched devpkg-nginx to the nginxinc/nginx-unprivileged base image and re-applied cap_drop: [ALL] / no-new-privileges, adding back CHOWN, SETGID and SETUID which it still needs at startup
@@ -35,6 +36,7 @@ Please ADD ALL Changes to the UNRELEASED SECTION and not a specific release
 ### Removed
 - devpkg-dozzle log viewer (port 8080, no authentication, Docker socket mounted): container logs now go to the journal and on to VictoriaLogs (credfeto-setup-arch-vm journald log driver), so it duplicated that. `./update` removes the container (`docker compose up -d --remove-orphans`) and `firewall` now closes the 8080 rules it used to open
 ### Deployment Changes
+- Run `sudo ./install` (or just `sudo egress/configure`) once on each cache to install the egress firewall and its timers; it starts in observation mode
 
 <!--
 Releases that have at least been deployed to staging, BUT NOT necessarily released to live.  Changes should be moved from [Unreleased] into here as they are merged into the appropriate release branch

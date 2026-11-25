@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# Keeps the dev package cache's egress firewall in step with the repo:
+# refreshes the egress table, then re-runs ./configure when anything under
+# egress/ changed since the commit ./configure last applied (for example the
+# daily egress-ranges commit).
+#
+# It does NOT pull: ../update already pulls the checkout every 5 minutes
+# (credfeto-package-cache.timer), and two pullers would race on the git index
+# lock. This only applies what ../update has pulled.
+#
+# Runs as root via devpkg-firewall-sync.timer, which ./configure installs.
+
+set -eu
+
+die() {
+    printf '\n\033[31m✗\033[0m %s\n' "firewall-sync: $*" >&2
+    exit 1
+}
+
+info() {
+    printf '\n\033[32m→\033[0m %s\n' "firewall-sync: $*"
+}
+
+[ "$(id -u)" -eq 0 ] || die "must run as root"
+
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -f "$0")")" && pwd)"
+REPO_DIR="$(git -C "${SCRIPT_DIR}" rev-parse --show-toplevel)" || die "${SCRIPT_DIR} is not in a git checkout"
+# Keep in sync with ./configure.
+APPLIED_HEAD_FILE="/var/lib/credfeto-dev-package-cache/firewall-applied-head"
+FIREWALL_PATH="egress"
+
+# Refresh the resolved sets first, so a run that finds nothing to apply still
+# keeps the addresses current. A failed refresh is only a warning.
+if [ -x /usr/local/bin/devpkg-egress ]; then
+    /usr/local/bin/devpkg-egress || printf '%s\n' "firewall-sync: warning: egress refresh failed" >&2
+fi
+
+HEAD="$(git -C "${REPO_DIR}" rev-parse HEAD)"
+APPLIED="$(cat "${APPLIED_HEAD_FILE}" 2> /dev/null || true)"
+
+if [ -n "${APPLIED}" ] && git -C "${REPO_DIR}" cat-file -e "${APPLIED}^{commit}" 2> /dev/null; then
+    [ "${APPLIED}" != "${HEAD}" ] || exit 0
+    CHANGED="$(git -C "${REPO_DIR}" diff --name-only "${APPLIED}..${HEAD}" -- "${FIREWALL_PATH}")"
+    if [ -z "${CHANGED}" ]; then
+        # Nothing firewall-related: move the record on so later diffs stay short.
+        printf '%s\n' "${HEAD}" > "${APPLIED_HEAD_FILE}"
+        exit 0
+    fi
+    info "firewall config changed since ${APPLIED}: $(printf '%s\n' "${CHANGED}" | tr '\n' ' ')"
+else
+    info "no applied-commit record; applying the firewall config"
+fi
+
+"${SCRIPT_DIR}/configure" || die "configure failed; will retry on the next run"

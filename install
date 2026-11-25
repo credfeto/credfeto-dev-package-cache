@@ -55,4 +55,10 @@ sudo systemctl start credfeto-package-cache-prune.timer || die "Could not start 
 
 "$BASEDIR/update"
 
+# Egress firewall (observation mode, log only, unless DEVPKG_FIREWALL_ENFORCE=true
+# in .env). Run here and not from update: update runs every 5 minutes, and
+# devpkg-firewall-sync.timer re-applies it when egress/ changes.
+info "Configuring the egress firewall"
+sudo "$BASEDIR/egress/configure" || die "Could not configure the egress firewall"
+
 success "Done"

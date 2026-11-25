@@ -1,0 +1,8 @@
+[Unit]
+Description=Re-apply the dev package cache's egress firewall when the repo changed
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/devpkg-firewall-sync
